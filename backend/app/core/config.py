@@ -5,6 +5,21 @@ from pydantic import Field, PostgresDsn
 from pydantic_settings import BaseSettings
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+LOCAL_DEV_SCHEME = "http"
+
+
+def _build_local_origin(host: str, port: int) -> str:
+    return f"{LOCAL_DEV_SCHEME}://{host}:{port}"
+
+
+DEFAULT_CORS_ALLOW_ORIGINS = ",".join(
+    [
+        _build_local_origin("localhost", 4200),
+        _build_local_origin("127.0.0.1", 4200),
+        _build_local_origin("localhost", 9000),
+        _build_local_origin("127.0.0.1", 9000),
+    ]
+)
 
 
 class Settings(BaseSettings):
@@ -14,7 +29,7 @@ class Settings(BaseSettings):
     google_books_api_key: str = Field("", env="GOOGLE_BOOKS_API_KEY")
     secret_key: str = Field("change_me_to_a_secure_secret", env="SECRET_KEY")
     cors_allow_origins: str = Field(
-        "http://localhost:4200,http://127.0.0.1:4200,http://localhost:9000,http://127.0.0.1:9000",
+        DEFAULT_CORS_ALLOW_ORIGINS,
         env="CORS_ALLOW_ORIGINS",
     )
 

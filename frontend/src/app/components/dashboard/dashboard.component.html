@@ -17,13 +17,13 @@
     </div>
     <div class="filter-grid" *ngIf="dashboard">
       <div class="field-row">
-        <label>Objectif annuel</label>
-        <input type="number" [(ngModel)]="readingGoal" min="1" />
+        <label for="reading_goal">Objectif annuel</label>
+        <input id="reading_goal" type="number" [(ngModel)]="readingGoal" min="1" name="reading_goal" />
       </div>
       <div class="field-row goal-actions">
-        <label>Progression</label>
+        <label for="goal_progression">Progression</label>
         <div class="goal-inline">
-          <div class="goal-badge">{{ dashboard.books_read_this_year }} / {{ dashboard.reading_goal }} livres</div>
+          <div id="goal_progression" class="goal-badge">{{ dashboard.books_read_this_year }} / {{ dashboard.reading_goal }} livres</div>
           <button type="button" class="ghost" (click)="saveGoal()" [disabled]="savingGoal">Mettre a jour</button>
         </div>
       </div>

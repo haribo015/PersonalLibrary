@@ -16,9 +16,9 @@ export class RecommendationsComponent implements OnInit {
   error = '';
 
   constructor(
-    private bookService: BookService,
+    private readonly bookService: BookService,
     public auth: AuthService,
-    private router: Router,
+    private readonly router: Router,
   ) {}
 
   ngOnInit(): void {

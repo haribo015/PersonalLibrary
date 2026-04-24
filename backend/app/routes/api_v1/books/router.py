@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Annotated, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -18,9 +18,9 @@ router = APIRouter()
 
 @router.get("/search", response_model=list[GoogleBookSearchResult])
 async def search_books(
-    q: str = Query(..., min_length=1),
-    db: AsyncSession = Depends(get_db),
-    current_user: Optional[User] = Depends(get_optional_current_user),
+    q: Annotated[str, Query(..., min_length=1)],
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[Optional[User], Depends(get_optional_current_user)],
 ):
     library_repository = LibraryRepository(db)
     return await GoogleBooksService().search_books(
@@ -33,8 +33,8 @@ async def search_books(
 @router.get("/{google_book_id}/overview", response_model=BookOverview)
 async def get_book_overview(
     google_book_id: str,
-    db: AsyncSession = Depends(get_db),
-    current_user: Optional[User] = Depends(get_optional_current_user),
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[Optional[User], Depends(get_optional_current_user)],
 ):
     google_books_service = GoogleBooksService()
     book_repository = BookRepository(db)

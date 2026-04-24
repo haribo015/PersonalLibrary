@@ -49,19 +49,17 @@ async def test_get_current_user_returns_loaded_user(monkeypatch, make_user) -> N
     assert result is user
 
 
-@pytest.mark.asyncio
-async def test_get_current_active_user_rejects_inactive_user(make_user) -> None:
+def test_get_current_active_user_rejects_inactive_user(make_user) -> None:
     with pytest.raises(HTTPException) as exc:
-        await dependencies_module.get_current_active_user(make_user(is_active=False))
+        dependencies_module.get_current_active_user(make_user(is_active=False))
 
     assert exc.value.status_code == 400
 
 
-@pytest.mark.asyncio
-async def test_get_current_active_user_returns_active_user(make_user) -> None:
+def test_get_current_active_user_returns_active_user(make_user) -> None:
     user = make_user(is_active=True)
 
-    assert await dependencies_module.get_current_active_user(user) is user
+    assert dependencies_module.get_current_active_user(user) is user
 
 
 @pytest.mark.asyncio

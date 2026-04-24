@@ -53,14 +53,14 @@
       <form class="review-form" *ngIf="!loading" (submit)="$event.preventDefault(); save();">
         <div class="field-pair">
           <div class="field-row">
-            <label>Statut</label>
-            <select [(ngModel)]="item.reading_status" name="reading_status">
+            <label for="reading_status">Statut</label>
+            <select id="reading_status" [(ngModel)]="item.reading_status" name="reading_status">
               <option *ngFor="let status of statuses" [ngValue]="status">{{ formatStatus(status) }}</option>
             </select>
           </div>
           <div class="field-row">
-            <label>Categorie</label>
-            <select [(ngModel)]="item.category" name="category">
+            <label for="category">Categorie</label>
+            <select id="category" [(ngModel)]="item.category" name="category">
               <option *ngFor="let category of categories" [ngValue]="category">{{ category }}</option>
             </select>
           </div>
@@ -68,14 +68,14 @@
 
         <div class="field-pair">
           <div class="field-row">
-            <label>Priorite</label>
-            <select [(ngModel)]="item.priority" name="priority">
+            <label for="priority">Priorite</label>
+            <select id="priority" [(ngModel)]="item.priority" name="priority">
               <option *ngFor="let priority of priorities" [ngValue]="priority">{{ formatPriority(priority) }}</option>
             </select>
           </div>
           <div class="field-row">
-            <label>Format</label>
-            <select [(ngModel)]="item.reading_format" name="reading_format">
+            <label for="reading_format">Format</label>
+            <select id="reading_format" [(ngModel)]="item.reading_format" name="reading_format">
               <option *ngFor="let format of formats" [ngValue]="format">{{ format }}</option>
             </select>
           </div>
@@ -83,49 +83,48 @@
 
         <div class="field-pair">
           <div class="field-row">
-            <label>Note</label>
-            <select [(ngModel)]="rating" name="rating">
+            <label for="rating">Note</label>
+            <select id="rating" [(ngModel)]="rating" name="rating">
               <option *ngFor="let value of [1, 2, 3, 4, 5]" [ngValue]="value">{{ value }}/5</option>
             </select>
           </div>
           <div class="field-row checkbox-row">
-            <label>Favori</label>
-            <button type="button" class="ghost" (click)="item.favorite = !item.favorite">
-              {{ item.favorite ? 'Retirer des favoris' : 'Ajouter aux favoris' }}
-            </button>
+            <label for="favorite">Favori</label>
+            <input id="favorite" type="checkbox" [(ngModel)]="item.favorite" name="favorite" />
           </div>
         </div>
 
         <div class="field-pair">
           <div class="field-row">
-            <label>Pages lues</label>
-            <input type="number" [(ngModel)]="item.pages_read" name="pages_read" />
+            <label for="pages_read">Pages lues</label>
+            <input id="pages_read" type="number" [(ngModel)]="item.pages_read" name="pages_read" />
           </div>
           <div class="field-row">
-            <label>Total pages</label>
-            <input type="number" [(ngModel)]="item.pages_total" name="pages_total" />
+            <label for="pages_total">Total pages</label>
+            <input id="pages_total" type="number" [(ngModel)]="item.pages_total" name="pages_total" />
           </div>
         </div>
 
         <div class="field-pair">
           <div class="field-row">
-            <label>Debut</label>
-            <input type="date" [(ngModel)]="item.started_at" name="started_at" />
+            <label for="started_at">Debut</label>
+            <input id="started_at" type="date" [(ngModel)]="item.started_at" name="started_at" />
           </div>
           <div class="field-row">
-            <label>Fin</label>
-            <input type="date" [(ngModel)]="item.finished_at" name="finished_at" />
+            <label for="finished_at">Fin</label>
+            <input id="finished_at" type="date" [(ngModel)]="item.finished_at" name="finished_at" />
           </div>
         </div>
 
         <div class="field-row">
-          <label>Commentaire</label>
-          <textarea [(ngModel)]="reviewComment" name="review_comment" placeholder="Votre avis personnel"></textarea>
+          <label for="review_comment">Commentaire</label>
+          <textarea id="review_comment" [(ngModel)]="reviewComment" name="review_comment" placeholder="Votre avis personnel"></textarea>
         </div>
 
         <div class="field-row">
-          <label>Notes personnelles</label>
+          <label for="personal_notes">Notes personnelles</label>
           <textarea
+            id="personal_notes"
             [(ngModel)]="item.personal_notes"
             name="personal_notes"
             placeholder="Notes, citations, points a retenir"
@@ -133,8 +132,9 @@
         </div>
 
         <div class="field-row">
-          <label>Tags</label>
+          <label for="tags">Tags</label>
           <input
+            id="tags"
             type="text"
             [(ngModel)]="item.tags"
             name="tags"

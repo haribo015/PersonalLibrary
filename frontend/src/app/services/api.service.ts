@@ -6,9 +6,9 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class ApiService {
-  public apiBase = window.location.port === '4200' ? 'http://localhost:8000/api/v1' : '/api/v1';
+  public apiBase = globalThis.location.port === '4200' ? 'http://localhost:8000/api/v1' : '/api/v1';
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   private getAuthHeaders(): HttpHeaders | undefined {
     const token = localStorage.getItem('auth_token');

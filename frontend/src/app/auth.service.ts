@@ -14,7 +14,7 @@ interface TokenResponse {
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private api: ApiService, private http: HttpClient) {}
+  constructor(private readonly api: ApiService, private readonly http: HttpClient) {}
 
   login(email: string, password: string): Observable<TokenResponse> {
     const body = new HttpParams()

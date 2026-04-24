@@ -13,7 +13,7 @@ export class LoginComponent {
   password = '';
   error = '';
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(private readonly auth: AuthService, private readonly router: Router) {}
 
   login(): void {
     this.error = '';

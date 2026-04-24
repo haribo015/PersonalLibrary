@@ -15,21 +15,7 @@ class LibraryService:
 
     async def add_book(self, user_id: int, book_in: LibraryItemCreate):
         payload = book_in.model_dump()
-        metadata = {
-            "category": payload.pop("category"),
-            "reading_status": payload.pop("reading_status"),
-            "priority": payload.pop("priority"),
-            "source": payload.pop("source"),
-            "reading_format": payload.pop("reading_format"),
-            "pages_total": payload.pop("pages_total"),
-            "pages_read": payload.pop("pages_read"),
-            "started_at": payload.pop("started_at"),
-            "finished_at": payload.pop("finished_at"),
-            "last_opened_at": payload.pop("last_opened_at"),
-            "personal_notes": payload.pop("personal_notes"),
-            "favorite": payload.pop("favorite"),
-            "tags": payload.pop("tags"),
-        }
+        metadata = self._extract_metadata(payload)
         book = await self.book_repository.upsert_from_google_payload(**payload)
         existing = await self.library_repository.get_for_user_and_book(user_id, book.id)
         if existing is not None:
@@ -42,21 +28,8 @@ class LibraryService:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Livre introuvable dans la bibliotheque")
 
         payload = update_in.model_dump(exclude_unset=True)
-        if "reading_status" in payload:
-            if payload["reading_status"] not in {"finished", "dnf"}:
-                payload.setdefault("finished_at", None)
-            if payload["reading_status"] == "finished" and "finished_at" not in payload:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="La date de fin est requise pour un livre lu")
-
-        if "pages_read" in payload and "pages_total" not in payload:
-            pages_total = existing.pages_total
-            if pages_total is not None and payload["pages_read"] is not None and payload["pages_read"] > pages_total:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Les pages lues ne peuvent pas depasser le total")
-
-        if "pages_total" in payload and payload["pages_total"] is not None:
-            pages_read = payload.get("pages_read", existing.pages_read)
-            if pages_read is not None and pages_read > payload["pages_total"]:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Les pages lues ne peuvent pas depasser le total")
+        self._validate_reading_status(payload)
+        self._validate_page_progress(existing, payload)
 
         return await self.library_repository.update(existing, payload)
 
@@ -65,3 +38,49 @@ class LibraryService:
         if existing is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Livre introuvable dans la bibliotheque")
         await self.library_repository.delete_for_user_and_book(user_id, book_id)
+
+    @staticmethod
+    def _extract_metadata(payload: dict) -> dict:
+        metadata_keys = {
+            "category",
+            "reading_status",
+            "priority",
+            "source",
+            "reading_format",
+            "pages_total",
+            "pages_read",
+            "started_at",
+            "finished_at",
+            "last_opened_at",
+            "personal_notes",
+            "favorite",
+            "tags",
+        }
+        return {key: payload.pop(key) for key in metadata_keys}
+
+    @staticmethod
+    def _validate_reading_status(payload: dict) -> None:
+        reading_status = payload.get("reading_status")
+        if reading_status is None:
+            return
+        if reading_status not in {"finished", "dnf"}:
+            payload.setdefault("finished_at", None)
+            return
+        if reading_status == "finished" and "finished_at" not in payload:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="La date de fin est requise pour un livre lu")
+
+    @staticmethod
+    def _validate_page_progress(existing, payload: dict) -> None:
+        pages_read = payload.get("pages_read")
+        if pages_read is not None and "pages_total" not in payload:
+            LibraryService._ensure_pages_read_within_limit(pages_read, existing.pages_total)
+
+        pages_total = payload.get("pages_total")
+        if pages_total is not None:
+            current_pages_read = pages_read if pages_read is not None else existing.pages_read
+            LibraryService._ensure_pages_read_within_limit(current_pages_read, pages_total)
+
+    @staticmethod
+    def _ensure_pages_read_within_limit(pages_read: int | None, pages_total: int | None) -> None:
+        if pages_total is not None and pages_read is not None and pages_read > pages_total:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Les pages lues ne peuvent pas depasser le total")

@@ -9,7 +9,7 @@ import { AuthService } from './auth.service';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  constructor(public auth: AuthService, private router: Router) {}
+  constructor(public auth: AuthService, private readonly router: Router) {}
 
   logout(): void {
     this.auth.logout();

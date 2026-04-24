@@ -24,9 +24,9 @@ export class LibraryComponent implements OnInit {
   readonly formats = ['paper', 'ebook', 'audiobook'];
 
   constructor(
-    private bookService: BookService,
+    private readonly bookService: BookService,
     public auth: AuthService,
-    private router: Router,
+    private readonly router: Router,
   ) {}
 
   ngOnInit(): void {

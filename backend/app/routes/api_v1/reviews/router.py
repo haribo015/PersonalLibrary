@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -16,8 +18,8 @@ router = APIRouter()
 @router.post("/", response_model=UserBookReviewRead)
 async def upsert_review(
     review_in: ReviewUpsert,
-    db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_active_user)],
 ):
     service = ReviewService(ReviewRepository(db), LibraryRepository(db), BookRepository(db))
     return await service.upsert_review(current_user.id, review_in)
@@ -25,8 +27,8 @@ async def upsert_review(
 
 @router.get("/", response_model=list[UserBookReviewRead])
 async def list_reviews(
-    db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_active_user)],
 ):
     service = ReviewService(ReviewRepository(db), LibraryRepository(db), BookRepository(db))
     return await service.list_reviews(current_user.id)

@@ -17,9 +17,9 @@ export class SearchComponent {
   error = '';
 
   constructor(
-    private bookService: BookService,
+    private readonly bookService: BookService,
     public auth: AuthService,
-    private router: Router,
+    private readonly router: Router,
   ) {}
 
   search(): void {

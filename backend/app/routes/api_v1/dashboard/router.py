@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -15,8 +17,8 @@ router = APIRouter()
 
 @router.get("/", response_model=DashboardOverview)
 async def get_dashboard(
-    db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_active_user)],
 ):
     service = DashboardService(LibraryRepository(db), ReviewRepository(db), UserRepository(db))
     return await service.get_overview(current_user)
@@ -25,8 +27,8 @@ async def get_dashboard(
 @router.patch("/goal", response_model=DashboardOverview)
 async def update_reading_goal(
     goal_in: DashboardGoalUpdate,
-    db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_active_user)],
 ):
     service = DashboardService(LibraryRepository(db), ReviewRepository(db), UserRepository(db))
     return await service.update_goal(current_user, goal_in)

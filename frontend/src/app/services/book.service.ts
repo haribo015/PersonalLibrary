@@ -10,7 +10,7 @@ import { ApiService } from './api.service';
 export class BookService {
   private readonly selectedBookStorageKey = 'selected_book';
 
-  constructor(private api: ApiService) {}
+  constructor(private readonly api: ApiService) {}
 
   searchBooks(query: string): Observable<Book[]> {
     return this.api.get<Book[]>(`/books/search?q=${encodeURIComponent(query)}`);

@@ -18,9 +18,9 @@ export class DashboardComponent implements OnInit {
   savingGoal = false;
 
   constructor(
-    private bookService: BookService,
+    private readonly bookService: BookService,
     public auth: AuthService,
-    private router: Router,
+    private readonly router: Router,
   ) {}
 
   ngOnInit(): void {

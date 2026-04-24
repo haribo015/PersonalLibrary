@@ -24,9 +24,9 @@ export class BookEditComponent implements OnInit {
   readonly formats = ['paper', 'ebook', 'audiobook'];
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private bookService: BookService,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly bookService: BookService,
     public auth: AuthService,
   ) {}
 
@@ -39,7 +39,7 @@ export class BookEditComponent implements OnInit {
     const navigationItem = this.router.getCurrentNavigation()?.extras.state?.['item'] as LibraryItem | undefined;
     const bookId = Number(this.route.snapshot.paramMap.get('bookId'));
 
-    if (navigationItem && navigationItem.book_id === bookId) {
+    if (navigationItem?.book_id === bookId) {
       this.item = this.cloneItem(navigationItem);
     }
 
@@ -55,7 +55,7 @@ export class BookEditComponent implements OnInit {
           return;
         }
 
-        this.item = this.cloneItem(current ?? this.item!);
+        this.item = this.cloneItem(current ?? this.item);
         const review = reviews.find(entry => entry.book_id === this.item.book_id);
         this.rating = review?.rating ?? 5;
         this.reviewComment = review?.comment ?? '';
@@ -131,7 +131,10 @@ export class BookEditComponent implements OnInit {
     return labels[priority] ?? priority;
   }
 
-  private cloneItem(item: LibraryItem): LibraryItem {
+  private cloneItem(item: LibraryItem | null): LibraryItem {
+    if (!item) {
+      throw new Error('Aucun livre disponible pour la duplication.');
+    }
     return {
       ...item,
       book: { ...item.book },

@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from datetime import timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -15,7 +17,7 @@ router = APIRouter()
 
 
 @router.post("/register", response_model=UserRead)
-async def register_user(user_in: UserCreate, db: AsyncSession = Depends(get_db)):
+async def register_user(user_in: UserCreate, db: Annotated[AsyncSession, Depends(get_db)]):
     service = AuthService(UserRepository(db))
     user = await service.register_user(user_in)
     if user is None:
@@ -24,7 +26,10 @@ async def register_user(user_in: UserCreate, db: AsyncSession = Depends(get_db))
 
 
 @router.post("/token", response_model=Token)
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
+async def login_for_access_token(
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    db: Annotated[AsyncSession, Depends(get_db)],
+):
     service = AuthService(UserRepository(db))
     user = await service.authenticate_user(form_data.username, form_data.password)
     if user is None:

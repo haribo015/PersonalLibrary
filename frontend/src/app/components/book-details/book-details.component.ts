@@ -15,9 +15,9 @@ export class BookDetailsComponent implements OnInit {
   loading = true;
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private bookService: BookService,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly bookService: BookService,
   ) {}
 
   ngOnInit(): void {

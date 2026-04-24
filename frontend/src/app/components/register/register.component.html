@@ -6,18 +6,18 @@
 
     <form class="review-form" (submit)="$event.preventDefault(); register();">
       <div class="field-row">
-        <label>Nom</label>
-        <input type="text" [(ngModel)]="name" name="name" required />
+        <label for="register_name">Nom</label>
+        <input id="register_name" type="text" [(ngModel)]="name" name="name" required />
       </div>
 
       <div class="field-row">
-        <label>Email</label>
-        <input type="email" [(ngModel)]="email" name="email" required />
+        <label for="register_email">Email</label>
+        <input id="register_email" type="email" [(ngModel)]="email" name="email" required />
       </div>
 
       <div class="field-row">
-        <label>Mot de passe</label>
-        <input type="password" [(ngModel)]="password" name="password" required />
+        <label for="register_password">Mot de passe</label>
+        <input id="register_password" type="password" [(ngModel)]="password" name="password" required />
       </div>
 
       <button type="button" (click)="register()">Creer un compte</button>

@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -15,8 +17,8 @@ router = APIRouter()
 
 @router.get("/", response_model=list[GoogleBookSearchResult])
 async def get_recommendations(
-    db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_active_user)],
 ):
     service = RecommendationService(LibraryRepository(db), ReviewRepository(db), GoogleBooksService())
     return await service.get_recommendations(current_user.id)

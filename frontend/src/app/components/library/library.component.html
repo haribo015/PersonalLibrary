@@ -21,29 +21,29 @@
 
     <div class="filter-grid" *ngIf="libraryItems.length">
       <div class="field-row">
-        <label>Statut</label>
-        <select [(ngModel)]="selectedStatus">
+        <label for="selected_status">Statut</label>
+        <select id="selected_status" [(ngModel)]="selectedStatus" name="selected_status">
           <option value="all">Tous</option>
           <option *ngFor="let status of statuses" [ngValue]="status">{{ formatStatus(status) }}</option>
         </select>
       </div>
       <div class="field-row">
-        <label>Categorie</label>
-        <select [(ngModel)]="selectedCategory">
+        <label for="selected_category">Categorie</label>
+        <select id="selected_category" [(ngModel)]="selectedCategory" name="selected_category">
           <option value="all">Toutes</option>
           <option *ngFor="let category of availableCategories" [ngValue]="category">{{ category }}</option>
         </select>
       </div>
       <div class="field-row">
-        <label>Priorite</label>
-        <select [(ngModel)]="selectedPriority">
+        <label for="selected_priority">Priorite</label>
+        <select id="selected_priority" [(ngModel)]="selectedPriority" name="selected_priority">
           <option value="all">Toutes</option>
           <option *ngFor="let priority of priorities" [ngValue]="priority">{{ formatPriority(priority) }}</option>
         </select>
       </div>
       <div class="field-row">
-        <label>Trier par</label>
-        <select [(ngModel)]="sortBy">
+        <label for="sort_by">Trier par</label>
+        <select id="sort_by" [(ngModel)]="sortBy" name="sort_by">
           <option value="recent">Ajout recent</option>
           <option value="title">Titre</option>
           <option value="status">Statut</option>

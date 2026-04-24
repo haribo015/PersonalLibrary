@@ -6,13 +6,13 @@
 
     <form class="review-form" (submit)="$event.preventDefault(); login();">
       <div class="field-row">
-        <label>Email</label>
-        <input type="email" [(ngModel)]="email" name="email" required />
+        <label for="login_email">Email</label>
+        <input id="login_email" type="email" [(ngModel)]="email" name="email" required />
       </div>
 
       <div class="field-row">
-        <label>Mot de passe</label>
-        <input type="password" [(ngModel)]="password" name="password" required />
+        <label for="login_password">Mot de passe</label>
+        <input id="login_password" type="password" [(ngModel)]="password" name="password" required />
       </div>
 
       <button type="button" (click)="login()">Se connecter</button>

@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -14,8 +16,8 @@ router = APIRouter()
 
 @router.get("/", response_model=list[LibraryItemRead])
 async def list_library(
-    db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_active_user)],
 ):
     service = LibraryService(LibraryRepository(db), BookRepository(db))
     return await service.list_library(current_user.id)
@@ -24,8 +26,8 @@ async def list_library(
 @router.post("/", response_model=LibraryItemRead, status_code=status.HTTP_201_CREATED)
 async def add_book_to_library(
     book_in: LibraryItemCreate,
-    db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_active_user)],
 ):
     service = LibraryService(LibraryRepository(db), BookRepository(db))
     return await service.add_book(current_user.id, book_in)
@@ -34,8 +36,8 @@ async def add_book_to_library(
 @router.delete("/{book_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def remove_book_from_library(
     book_id: int,
-    db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_active_user)],
 ):
     service = LibraryService(LibraryRepository(db), BookRepository(db))
     await service.remove_book(current_user.id, book_id)
@@ -46,8 +48,8 @@ async def remove_book_from_library(
 async def update_library_book(
     book_id: int,
     update_in: LibraryItemUpdate,
-    db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_active_user)],
 ):
     service = LibraryService(LibraryRepository(db), BookRepository(db))
     return await service.update_book(current_user.id, book_id, update_in)
