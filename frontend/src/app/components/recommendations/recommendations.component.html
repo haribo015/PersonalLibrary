@@ -1,0 +1,63 @@
+<section class="screen">
+  <section class="hero">
+    <span class="hero-tag">Recommendations</span>
+    <h2>Des suggestions construites a partir de vos habitudes de lecture.</h2>
+    <p>
+      Les recommandations s'appuient sur votre bibliotheque et vos notes pour proposer des
+      resultats plus pertinents.
+    </p>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <h3>Suggestions</h3>
+        <div class="section-note">Meme grille, memes dimensions, meme densite visuelle.</div>
+      </div>
+      <div class="muted" *ngIf="recommendations.length">{{ recommendations.length }} suggestion(s)</div>
+    </div>
+    <p class="error" *ngIf="error">{{ error }}</p>
+    <div class="muted" *ngIf="loading">Calcul des suggestions...</div>
+  </section>
+
+  <div class="book-grid" *ngIf="recommendations.length">
+    <article *ngFor="let book of recommendations" class="book-card">
+      <div
+        class="book-cover"
+        [class.no-image]="!book.cover_image"
+        [style.background-image]="book.cover_image ? 'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.5)), url(' + book.cover_image + ')' : ''"
+      >
+        <span class="cover-chip">{{ book.already_in_library ? 'Sauvegarde' : 'Suggestion' }}</span>
+      </div>
+
+      <div class="book-body">
+        <h4 class="book-title">{{ book.title }}</h4>
+
+        <dl class="book-meta">
+          <div>
+            <dt>Auteurs</dt>
+            <dd>{{ book.authors || 'Non renseignes' }}</dd>
+          </div>
+          <div>
+            <dt>Parution</dt>
+            <dd>{{ book.published_date || 'Non renseignee' }}</dd>
+          </div>
+        </dl>
+
+        <p class="book-description">{{ book.description || 'Aucune description disponible pour cette suggestion.' }}</p>
+
+        <div class="book-actions">
+          <button type="button" class="secondary" (click)="openDetails(book)">Voir les details</button>
+          <button type="button" (click)="addBook(book)" [disabled]="!!book.already_in_library">
+            {{ book.already_in_library ? 'Deja en bibliotheque' : 'Ajouter' }}
+          </button>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <section class="empty-state" *ngIf="!loading && !recommendations.length">
+    <strong>Aucune suggestion pour le moment.</strong>
+    <span class="muted">Ajoutez des livres et laissez quelques avis pour enrichir les recommandations.</span>
+  </section>
+</section>

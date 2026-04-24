@@ -1,0 +1,159 @@
+<section class="screen" *ngIf="item; else missingBook">
+  <section class="hero details-hero">
+    <span class="hero-tag">Edition</span>
+    <h2>Modifier {{ item.book.title }}</h2>
+    <p>Les changements sont faits sur une page dediee, puis vous revenez directement sur la fiche detail du livre.</p>
+  </section>
+
+  <section class="details-layout">
+    <article class="book-card details-card">
+      <div
+        class="book-cover details-cover"
+        [class.no-image]="!item.book.cover_image"
+        [style.background-image]="item.book.cover_image ? 'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.5)), url(' + item.book.cover_image + ')' : ''"
+      >
+        <span class="cover-chip">{{ formatStatus(item.reading_status) }}</span>
+      </div>
+
+      <div class="book-body">
+        <h3 class="book-title">{{ item.book.title }}</h3>
+
+        <dl class="book-meta">
+          <div>
+            <dt>Auteurs</dt>
+            <dd>{{ item.book.authors || 'Non renseignes' }}</dd>
+          </div>
+          <div>
+            <dt>Parution</dt>
+            <dd>{{ item.book.published_date || 'Non renseignee' }}</dd>
+          </div>
+          <div>
+            <dt>Ajout</dt>
+            <dd>{{ item.created_at | date:'mediumDate' }}</dd>
+          </div>
+          <div>
+            <dt>Progression</dt>
+            <dd>{{ item.pages_read || 0 }} / {{ item.pages_total || '?' }}</dd>
+          </div>
+        </dl>
+      </div>
+    </article>
+
+    <section class="panel overview-panel">
+      <div class="panel-head">
+        <div>
+          <h3>Modifier le suivi</h3>
+          <div class="section-note">Mettez a jour vos metadonnees de lecture et votre avis en une seule validation.</div>
+        </div>
+      </div>
+
+      <p class="error" *ngIf="error">{{ error }}</p>
+      <div class="muted" *ngIf="loading">Chargement de la page d'edition...</div>
+
+      <form class="review-form" *ngIf="!loading" (submit)="$event.preventDefault(); save();">
+        <div class="field-pair">
+          <div class="field-row">
+            <label>Statut</label>
+            <select [(ngModel)]="item.reading_status" name="reading_status">
+              <option *ngFor="let status of statuses" [ngValue]="status">{{ formatStatus(status) }}</option>
+            </select>
+          </div>
+          <div class="field-row">
+            <label>Categorie</label>
+            <select [(ngModel)]="item.category" name="category">
+              <option *ngFor="let category of categories" [ngValue]="category">{{ category }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-pair">
+          <div class="field-row">
+            <label>Priorite</label>
+            <select [(ngModel)]="item.priority" name="priority">
+              <option *ngFor="let priority of priorities" [ngValue]="priority">{{ formatPriority(priority) }}</option>
+            </select>
+          </div>
+          <div class="field-row">
+            <label>Format</label>
+            <select [(ngModel)]="item.reading_format" name="reading_format">
+              <option *ngFor="let format of formats" [ngValue]="format">{{ format }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-pair">
+          <div class="field-row">
+            <label>Note</label>
+            <select [(ngModel)]="rating" name="rating">
+              <option *ngFor="let value of [1, 2, 3, 4, 5]" [ngValue]="value">{{ value }}/5</option>
+            </select>
+          </div>
+          <div class="field-row checkbox-row">
+            <label>Favori</label>
+            <button type="button" class="ghost" (click)="item.favorite = !item.favorite">
+              {{ item.favorite ? 'Retirer des favoris' : 'Ajouter aux favoris' }}
+            </button>
+          </div>
+        </div>
+
+        <div class="field-pair">
+          <div class="field-row">
+            <label>Pages lues</label>
+            <input type="number" [(ngModel)]="item.pages_read" name="pages_read" />
+          </div>
+          <div class="field-row">
+            <label>Total pages</label>
+            <input type="number" [(ngModel)]="item.pages_total" name="pages_total" />
+          </div>
+        </div>
+
+        <div class="field-pair">
+          <div class="field-row">
+            <label>Debut</label>
+            <input type="date" [(ngModel)]="item.started_at" name="started_at" />
+          </div>
+          <div class="field-row">
+            <label>Fin</label>
+            <input type="date" [(ngModel)]="item.finished_at" name="finished_at" />
+          </div>
+        </div>
+
+        <div class="field-row">
+          <label>Commentaire</label>
+          <textarea [(ngModel)]="reviewComment" name="review_comment" placeholder="Votre avis personnel"></textarea>
+        </div>
+
+        <div class="field-row">
+          <label>Notes personnelles</label>
+          <textarea
+            [(ngModel)]="item.personal_notes"
+            name="personal_notes"
+            placeholder="Notes, citations, points a retenir"
+          ></textarea>
+        </div>
+
+        <div class="field-row">
+          <label>Tags</label>
+          <input
+            type="text"
+            [(ngModel)]="item.tags"
+            name="tags"
+            placeholder="fantasy, cosy, a relire"
+          />
+        </div>
+
+        <div class="book-actions">
+          <button type="button" class="secondary" [routerLink]="['/books', item.book.google_book_id]">Annuler</button>
+          <button type="submit" [disabled]="saving">{{ saving ? 'Enregistrement...' : 'Valider les modifications' }}</button>
+        </div>
+      </form>
+    </section>
+  </section>
+</section>
+
+<ng-template #missingBook>
+  <section class="empty-state" *ngIf="!loading">
+    <strong>Aucun livre a editer.</strong>
+    <span class="muted">Revenez a la bibliotheque puis ouvrez l'edition depuis une carte.</span>
+  </section>
+</ng-template>

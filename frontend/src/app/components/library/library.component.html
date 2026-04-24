@@ -1,0 +1,117 @@
+<section class="screen">
+  <section class="hero">
+    <span class="hero-tag">Library</span>
+    <h2>Votre collection personnelle, accessible et simple a piloter.</h2>
+    <p>
+      Tous vos livres sauvegardes sont centralises ici. Chaque carte reste compacte pour une lecture
+      rapide, et l'edition s'ouvre maintenant sur une page dediee.
+    </p>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <h3>Ma bibliotheque</h3>
+        <div class="section-note">Filtrez et classez vos livres par progression, categorie et priorite.</div>
+      </div>
+      <div class="muted" *ngIf="libraryItems.length">{{ filteredLibraryItems.length }} / {{ libraryItems.length }} livre(s)</div>
+    </div>
+    <p class="error" *ngIf="error">{{ error }}</p>
+    <div class="muted" *ngIf="loading">Chargement de votre bibliotheque...</div>
+
+    <div class="filter-grid" *ngIf="libraryItems.length">
+      <div class="field-row">
+        <label>Statut</label>
+        <select [(ngModel)]="selectedStatus">
+          <option value="all">Tous</option>
+          <option *ngFor="let status of statuses" [ngValue]="status">{{ formatStatus(status) }}</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <label>Categorie</label>
+        <select [(ngModel)]="selectedCategory">
+          <option value="all">Toutes</option>
+          <option *ngFor="let category of availableCategories" [ngValue]="category">{{ category }}</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <label>Priorite</label>
+        <select [(ngModel)]="selectedPriority">
+          <option value="all">Toutes</option>
+          <option *ngFor="let priority of priorities" [ngValue]="priority">{{ formatPriority(priority) }}</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <label>Trier par</label>
+        <select [(ngModel)]="sortBy">
+          <option value="recent">Ajout recent</option>
+          <option value="title">Titre</option>
+          <option value="status">Statut</option>
+          <option value="priority">Priorite</option>
+          <option value="progress">Progression</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <div class="book-grid" *ngIf="libraryItems.length">
+    <article *ngFor="let item of filteredLibraryItems" class="book-card">
+      <div
+        class="book-cover"
+        [class.no-image]="!item.book.cover_image"
+        [style.background-image]="item.book.cover_image ? 'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.5)), url(' + item.book.cover_image + ')' : ''"
+      >
+        <span class="cover-chip">{{ formatStatus(item.reading_status) }}</span>
+      </div>
+
+      <div class="book-body">
+        <h4 class="book-title">{{ item.book.title }}</h4>
+
+        <dl class="book-meta">
+          <div>
+            <dt>Auteurs</dt>
+            <dd>{{ item.book.authors || 'Non renseignes' }}</dd>
+          </div>
+          <div>
+            <dt>Parution</dt>
+            <dd>{{ item.book.published_date || 'Non renseignee' }}</dd>
+          </div>
+          <div>
+            <dt>Categorie</dt>
+            <dd>{{ item.category || 'General' }}</dd>
+          </div>
+          <div>
+            <dt>Priorite</dt>
+            <dd>{{ formatPriority(item.priority) }}</dd>
+          </div>
+        </dl>
+
+        <p class="book-description">{{ item.book.description || 'Aucune description disponible pour ce livre.' }}</p>
+
+        <div class="meta-chips">
+          <span class="meta-chip" *ngIf="item.favorite">Favori</span>
+          <span class="meta-chip" *ngIf="item.tags">{{ item.tags }}</span>
+        </div>
+
+        <div class="book-actions">
+          <button type="button" class="ghost" (click)="openDetails(item.book)">Voir les details</button>
+          <button type="button" class="ghost" (click)="openEdit(item)">Editer</button>
+          <button type="button" class="ghost" (click)="toggleFavorite(item)">
+            {{ item.favorite ? 'Retirer des favoris' : 'Ajouter aux favoris' }}
+          </button>
+          <button type="button" class="secondary" (click)="removeBook(item.book_id)">Retirer</button>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <section class="empty-state" *ngIf="!loading && !libraryItems.length">
+    <strong>Votre bibliotheque est vide.</strong>
+    <span class="muted">Ajoutez des livres depuis l'onglet Explorer pour commencer.</span>
+  </section>
+
+  <section class="empty-state" *ngIf="!loading && libraryItems.length && !filteredLibraryItems.length">
+    <strong>Aucun livre ne correspond a vos filtres.</strong>
+    <span class="muted">Essayez un autre statut, une autre categorie ou un autre tri.</span>
+  </section>
+</section>

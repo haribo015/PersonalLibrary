@@ -1,0 +1,68 @@
+<section class="screen">
+  <section class="hero">
+    <span class="hero-tag">Discovery</span>
+    <h2>Une bibliotheque personnelle, pensee comme une vraie interface produit.</h2>
+    <p>
+      Recherchez dans Google Books, comparez rapidement les ouvrages et ajoutez les plus
+      interessants a votre collection personnelle.
+    </p>
+
+    <form class="searchbar" (submit)="$event.preventDefault(); search();">
+      <input type="text" [(ngModel)]="query" name="query" placeholder="Rechercher un titre, un auteur ou un theme" />
+      <button type="button" (click)="search()">Rechercher</button>
+    </form>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <h3>Resultats</h3>
+        <div class="section-note">Recherche optimise par pertinence Google Books.</div>
+      </div>
+      <div class="muted" *ngIf="books.length">{{ books.length }} livre(s)</div>
+    </div>
+    <p class="error" *ngIf="error">{{ error }}</p>
+    <div class="muted" *ngIf="loading">Chargement des resultats...</div>
+  </section>
+
+  <div class="book-grid" *ngIf="books.length">
+    <article *ngFor="let book of books" class="book-card">
+      <div
+        class="book-cover"
+        [class.no-image]="!book.cover_image"
+        [style.background-image]="book.cover_image ? 'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.5)), url(' + book.cover_image + ')' : ''"
+      >
+        <span class="cover-chip">{{ book.already_in_library ? 'Sauvegarde' : 'Recherche' }}</span>
+      </div>
+
+      <div class="book-body">
+        <h4 class="book-title">{{ book.title }}</h4>
+
+        <dl class="book-meta">
+          <div>
+            <dt>Auteurs</dt>
+            <dd>{{ book.authors || 'Non renseignes' }}</dd>
+          </div>
+          <div>
+            <dt>Parution</dt>
+            <dd>{{ book.published_date || 'Non renseignee' }}</dd>
+          </div>
+        </dl>
+
+        <p class="book-description">{{ book.description || 'Aucune description disponible pour ce livre.' }}</p>
+
+        <div class="book-actions">
+          <button type="button" class="secondary" (click)="openDetails(book)">Voir les details</button>
+          <button type="button" (click)="addBook(book)" [disabled]="!!book.already_in_library">
+            {{ book.already_in_library ? 'Deja dans la bibliotheque' : 'Ajouter a la bibliotheque' }}
+          </button>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <section class="empty-state" *ngIf="!loading && !books.length">
+    <strong>Commencez par une recherche.</strong>
+    <span class="muted">Les cartes apparaitront ici avec un format strictement uniforme.</span>
+  </section>
+</section>

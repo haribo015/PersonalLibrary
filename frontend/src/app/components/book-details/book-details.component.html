@@ -1,0 +1,174 @@
+<section class="screen" *ngIf="book; else missingBook">
+  <section class="hero details-hero">
+    <span class="hero-tag">Overview</span>
+    <h2>{{ book.title }}</h2>
+    <p>{{ overview?.google_details?.subtitle || book.authors || 'Auteur non renseigne' }}</p>
+  </section>
+
+  <section class="details-layout">
+    <article class="book-card details-card">
+      <div
+        class="book-cover details-cover"
+        [class.no-image]="!book.cover_image"
+        [style.background-image]="book.cover_image ? 'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.5)), url(' + book.cover_image + ')' : ''"
+      >
+        <span class="cover-chip">Livre</span>
+      </div>
+
+      <div class="book-body">
+        <h3 class="book-title">{{ book.title }}</h3>
+
+        <dl class="book-meta">
+          <div>
+            <dt>Auteurs</dt>
+            <dd>{{ book.authors || 'Non renseignes' }}</dd>
+          </div>
+          <div>
+            <dt>Parution</dt>
+            <dd>{{ book.published_date || 'Non renseignee' }}</dd>
+          </div>
+          <div>
+            <dt>Identifiant</dt>
+            <dd>{{ book.google_book_id }}</dd>
+          </div>
+          <div *ngIf="overview?.google_details?.publisher">
+            <dt>Editeur</dt>
+            <dd>{{ overview?.google_details?.publisher }}</dd>
+          </div>
+          <div *ngIf="overview?.google_details?.page_count">
+            <dt>Pages</dt>
+            <dd>{{ overview?.google_details?.page_count }}</dd>
+          </div>
+          <div *ngIf="overview?.library_item">
+            <dt>Statut</dt>
+            <dd>{{ formatStatus(overview?.library_item?.reading_status) }}</dd>
+          </div>
+          <div *ngIf="overview?.library_item">
+            <dt>Categorie</dt>
+            <dd>{{ overview?.library_item?.category }}</dd>
+          </div>
+        </dl>
+      </div>
+    </article>
+
+    <section class="panel overview-panel">
+      <div class="panel-head">
+        <div>
+          <h3>Overview du livre</h3>
+          <div class="section-note">Une vue detaillee avant ajout ou consultation.</div>
+        </div>
+      </div>
+
+      <div class="overview-content">
+        <p>{{ book.description || 'Aucune description disponible pour ce livre.' }}</p>
+      </div>
+
+      <div class="details-grid details-grid-wide">
+        <article class="detail-block" *ngIf="overview?.google_details">
+          <h4>Infos Google Books</h4>
+          <dl class="book-meta compact-meta">
+            <div *ngIf="overview?.google_details?.categories?.length">
+              <dt>Categories</dt>
+              <dd>{{ overview?.google_details?.categories?.join(', ') }}</dd>
+            </div>
+            <div>
+              <dt>Langue</dt>
+              <dd>{{ formatLanguage(overview?.google_details?.language) }}</dd>
+            </div>
+            <div *ngIf="overview?.google_details?.average_rating">
+              <dt>Note moyenne</dt>
+              <dd>{{ overview?.google_details?.average_rating }}/5</dd>
+            </div>
+            <div *ngIf="overview?.google_details?.ratings_count">
+              <dt>Nombre d'avis</dt>
+              <dd>{{ overview?.google_details?.ratings_count }}</dd>
+            </div>
+            <div *ngIf="overview?.google_details?.maturity_rating">
+              <dt>Classification</dt>
+              <dd>{{ overview?.google_details?.maturity_rating }}</dd>
+            </div>
+          </dl>
+          <div class="book-actions link-actions" *ngIf="overview?.google_details?.preview_link || overview?.google_details?.info_link">
+            <a *ngIf="overview?.google_details?.preview_link" class="button-link ghost-link" [href]="overview?.google_details?.preview_link" target="_blank" rel="noreferrer">
+              Apercu Google
+            </a>
+            <a *ngIf="overview?.google_details?.info_link" class="button-link secondary-link" [href]="overview?.google_details?.info_link" target="_blank" rel="noreferrer">
+              Fiche Google
+            </a>
+          </div>
+        </article>
+
+        <article class="detail-block" *ngIf="overview?.library_item">
+          <h4>Suivi personnel</h4>
+          <dl class="book-meta compact-meta">
+            <div>
+              <dt>Priorite</dt>
+              <dd>{{ formatPriority(overview?.library_item?.priority) }}</dd>
+            </div>
+            <div>
+              <dt>Format</dt>
+              <dd>{{ overview?.library_item?.reading_format }}</dd>
+            </div>
+            <div>
+              <dt>Pages</dt>
+              <dd>{{ overview?.library_item?.pages_read || 0 }} / {{ overview?.library_item?.pages_total || '?' }}</dd>
+            </div>
+            <div>
+              <dt>Debut</dt>
+              <dd>{{ overview?.library_item?.started_at || 'Non renseigne' }}</dd>
+            </div>
+            <div>
+              <dt>Fin</dt>
+              <dd>{{ overview?.library_item?.finished_at || 'Non renseignee' }}</dd>
+            </div>
+            <div>
+              <dt>Favori</dt>
+              <dd>{{ overview?.library_item?.favorite ? 'Oui' : 'Non' }}</dd>
+            </div>
+            <div>
+              <dt>Tags</dt>
+              <dd>{{ overview?.library_item?.tags || 'Aucun tag' }}</dd>
+            </div>
+          </dl>
+        </article>
+
+        <article class="detail-block" *ngIf="overview?.review || overview?.library_item?.personal_notes">
+          <h4>Votre avis</h4>
+          <dl class="book-meta compact-meta" *ngIf="overview?.review">
+            <div>
+              <dt>Note</dt>
+              <dd>{{ overview?.review?.rating }}/5</dd>
+            </div>
+            <div>
+              <dt>Avis</dt>
+              <dd>{{ overview?.review?.comment || 'Aucun avis saisi' }}</dd>
+            </div>
+          </dl>
+          <div class="notes-block" *ngIf="overview?.library_item?.personal_notes">
+            <h5>Notes personnelles</h5>
+            <p>{{ overview?.library_item?.personal_notes }}</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="book-actions">
+        <button
+          type="button"
+          class="ghost"
+          *ngIf="overview?.library_item"
+          [routerLink]="['/library', overview?.library_item?.book_id, 'edit']"
+        >
+          Modifier ce livre
+        </button>
+        <button type="button" class="secondary" routerLink="/search">Retour a la recherche</button>
+      </div>
+    </section>
+  </section>
+</section>
+
+<ng-template #missingBook>
+  <section class="empty-state" *ngIf="!loading">
+    <strong>Aucun livre detaille disponible.</strong>
+    <span class="muted">Ouvrez cette page depuis une carte de livre pour afficher son overview.</span>
+  </section>
+</ng-template>

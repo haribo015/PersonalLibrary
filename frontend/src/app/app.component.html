@@ -1,0 +1,27 @@
+<div class="app-shell">
+  <div class="frame">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">B</div>
+        <div class="brand-copy">
+          <span>Personal Library</span>
+          <h1>Book Vault</h1>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <a routerLink="/dashboard" routerLinkActive="active-link" *ngIf="auth.isLoggedIn()">Dashboard</a>
+        <a routerLink="/search" routerLinkActive="active-link">Explorer</a>
+        <a routerLink="/library" routerLinkActive="active-link">Bibliotheque</a>
+        <a routerLink="/recommendations" routerLinkActive="active-link">Suggestions</a>
+        <a routerLink="/login" routerLinkActive="active-link" *ngIf="!auth.isLoggedIn()">Connexion</a>
+        <a routerLink="/register" routerLinkActive="active-link" *ngIf="!auth.isLoggedIn()">Inscription</a>
+        <button *ngIf="auth.isLoggedIn()" (click)="logout()">Deconnexion</button>
+      </nav>
+    </header>
+
+    <main>
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

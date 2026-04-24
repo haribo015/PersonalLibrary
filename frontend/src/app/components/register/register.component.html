@@ -1,0 +1,32 @@
+<section class="screen auth-layout">
+  <section class="auth-panel">
+    <span class="hero-tag">Account</span>
+    <h2>Inscription</h2>
+    <p class="section-note">Creez votre espace personnel pour sauvegarder, noter et retrouver vos lectures.</p>
+
+    <form class="review-form" (submit)="$event.preventDefault(); register();">
+      <div class="field-row">
+        <label>Nom</label>
+        <input type="text" [(ngModel)]="name" name="name" required />
+      </div>
+
+      <div class="field-row">
+        <label>Email</label>
+        <input type="email" [(ngModel)]="email" name="email" required />
+      </div>
+
+      <div class="field-row">
+        <label>Mot de passe</label>
+        <input type="password" [(ngModel)]="password" name="password" required />
+      </div>
+
+      <button type="button" (click)="register()">Creer un compte</button>
+      <p class="error" *ngIf="error">{{ error }}</p>
+    </form>
+  </section>
+
+  <aside class="info-panel">
+    <h3>Organisation</h3>
+    <p>Le backend est refactorise par domaines metier avec routes, services et repositories distincts.</p>
+  </aside>
+</section>

@@ -1,0 +1,27 @@
+<section class="screen auth-layout">
+  <section class="auth-panel">
+    <span class="hero-tag">Account</span>
+    <h2>Connexion</h2>
+    <p class="section-note">Accedez a votre bibliotheque personnelle et a vos recommandations.</p>
+
+    <form class="review-form" (submit)="$event.preventDefault(); login();">
+      <div class="field-row">
+        <label>Email</label>
+        <input type="email" [(ngModel)]="email" name="email" required />
+      </div>
+
+      <div class="field-row">
+        <label>Mot de passe</label>
+        <input type="password" [(ngModel)]="password" name="password" required />
+      </div>
+
+      <button type="button" (click)="login()">Se connecter</button>
+      <p class="error" *ngIf="error">{{ error }}</p>
+    </form>
+  </section>
+
+  <aside class="info-panel">
+    <h3>Mode personnel</h3>
+    <p>Le projet est maintenant pense pour une bibliotheque individuelle, avec conservation de vos livres et avis cote serveur.</p>
+  </aside>
+</section>
