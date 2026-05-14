@@ -4,7 +4,8 @@
   "cli": {
     "cache": {
       "enabled": false
-    }
+    },
+    "analytics": false
   },
   "projects": {
     "personal-library": {
@@ -31,6 +32,18 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "buildTarget": "personal-library:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "polyfills": ["zone.js", "zone.js/testing"],
+            "tsConfig": "tsconfig.spec.json",
+            "assets": ["src/favicon.ico"],
+            "styles": ["src/styles.css"],
+            "scripts": [],
+            "codeCoverage": true,
+            "karmaConfig": "karma.conf.js"
           }
         }
       }

@@ -48,19 +48,43 @@ Les services backend sont dans `backend/app/services`. Ils portent la logique me
 La gateway Nginx est le point d'entree unique en local. Le frontend et le backend restent accessibles uniquement sur le reseau Docker interne.
 
 ## Tests et couverture
-- Lancer les tests backend avec couverture :
+Avant les tests backend, verifier que le fichier d'environnement existe :
+```powershell
+Copy-Item backend/.env.example backend/.env
+```
+
+- Lancer les tests backend avec couverture depuis Docker :
   ```powershell
   docker compose --profile test run --rm backend-tests
   ```
-- En CI, le backend produit :
+
+- Lancer les tests frontend Angular avec couverture depuis Docker :
+  ```powershell
+  docker compose --profile test run --rm frontend-tests
+  ```
+
+- Lancer les deux suites de tests depuis Docker :
+  ```powershell
+  docker compose --profile test run --rm backend-tests
+  docker compose --profile test run --rm frontend-tests
+  ```
+
+- Construire l'image frontend avant les tests si les dependances ou le Dockerfile ont change :
+  ```powershell
+  docker compose build frontend
+  ```
+
+- Rapports produits pour la CI et SonarQube :
   - `backend/coverage.xml`
   - `backend/pytest-report.xml`
+  - `frontend/coverage/personal-library/lcov.info`
 
 ## Preparation SonarQube
 - Les sources analysees sont `backend/app`, `frontend/src` et `gateway`
 - Les artefacts de build, caches et rapports sont exclus de l'analyse
 - La couverture Python est lue depuis `backend/coverage.xml`
 - Le rapport de tests Python est lu depuis `backend/pytest-report.xml`
+- La couverture TypeScript est lue depuis `frontend/coverage/personal-library/lcov.info`
 
 Pour activer l'analyse SonarQube dans GitHub Actions, ajoute ces secrets :
 - `SONAR_HOST_URL`

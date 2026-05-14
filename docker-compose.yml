@@ -57,6 +57,18 @@ services:
       - frontend_node_modules:/usr/src/app/node_modules
     command: sh -c "npm install --legacy-peer-deps --no-audit --no-fund --no-package-lock && npm run start -- --host 0.0.0.0 --poll=2000"
 
+  frontend-tests:
+    build:
+      context: ./frontend
+    profiles:
+      - test
+    user: root
+    volumes:
+      - ./frontend:/usr/src/app
+      # Reuse the dependency volume but refresh it before running tests.
+      - frontend_node_modules:/usr/src/app/node_modules
+    command: sh -c "npm install --legacy-peer-deps --no-audit --no-fund --no-package-lock && npm run test:docker"
+
   gateway:
     image: nginx:1.27-alpine
     depends_on:

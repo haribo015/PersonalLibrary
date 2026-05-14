@@ -78,7 +78,7 @@ jobs:
           fail_ci_if_error: false
 
   frontend-quality:
-    name: Frontend Build Validation
+    name: Frontend Build, Tests and Coverage
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -105,12 +105,22 @@ jobs:
       - name: Build frontend
         run: npm run build
 
+      - name: Run frontend tests with coverage
+        run: npm run test:docker
+
       - name: Upload frontend build artifact
         uses: actions/upload-artifact@v4
         if: success()
         with:
           name: frontend-dist
           path: frontend/dist
+
+      - name: Upload frontend coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontend-coverage
+          path: frontend/coverage
 
   docker-build:
     name: Docker Build Validation
@@ -151,6 +161,12 @@ jobs:
         with:
           name: backend-quality-reports
           path: backend
+
+      - name: Download frontend coverage report
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-coverage
+          path: frontend/coverage
 
       - name: Cache SonarQube packages
         uses: actions/cache@v4
