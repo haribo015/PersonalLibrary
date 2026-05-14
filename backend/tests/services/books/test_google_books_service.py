@@ -166,6 +166,10 @@ async def test_get_book_details_returns_google_metadata(monkeypatch) -> None:
                         "subtitle": "Deep dive",
                         "publisher": "Example Press",
                         "pageCount": 456,
+                        "industryIdentifiers": [
+                            {"type": "ISBN_10", "identifier": "1234567890"},
+                            {"type": "ISBN_13", "identifier": "9781234567897"},
+                        ],
                         "categories": ["Testing", "Engineering"],
                         "language": "fr",
                         "averageRating": 4.5,
@@ -187,6 +191,8 @@ async def test_get_book_details_returns_google_metadata(monkeypatch) -> None:
 
     assert details is not None
     assert details.publisher == "Example Press"
+    assert details.isbn_13 == "9781234567897"
+    assert details.isbn_10 == "1234567890"
     assert details.categories == ["Testing", "Engineering"]
     assert details.preview_link == "https://example.com/preview"
 

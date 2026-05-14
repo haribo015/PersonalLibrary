@@ -12,6 +12,7 @@ export class AppComponent {
   constructor(public auth: AuthService, private readonly router: Router) {}
 
   logout(): void {
+    // Logout is a shell-level action because it affects navigation outside feature screens.
     this.auth.logout();
     this.router.navigate(['/login']);
   }

@@ -75,6 +75,8 @@ export class LibraryComponent implements OnInit {
   }
 
   get filteredLibraryItems(): LibraryItem[] {
+    // Derive the visible list from immutable copies so filtering and sorting never
+    // reorder the source array returned by the backend.
     return [...this.libraryItems]
       .filter(item => this.selectedStatus === 'all' || item.reading_status === this.selectedStatus)
       .filter(item => this.selectedCategory === 'all' || item.category === this.selectedCategory)
@@ -95,7 +97,7 @@ export class LibraryComponent implements OnInit {
       reading: 'En cours',
       finished: 'Termine',
       paused: 'En pause',
-      dnf: 'DNF',
+      dnf: 'Abandonne',
     };
     return labels[status] ?? status;
   }
@@ -111,6 +113,7 @@ export class LibraryComponent implements OnInit {
 
   updateMetadata(item: LibraryItem): void {
     const payload: LibraryUpdate = {
+      // Persist quick inline changes using the same DTO as the edit screen.
       category: item.category,
       reading_status: item.reading_status,
       priority: item.priority,
@@ -137,6 +140,7 @@ export class LibraryComponent implements OnInit {
   }
 
   toggleFavorite(item: LibraryItem): void {
+    // Optimistic local toggle keeps the UI responsive; updateMetadata persists it.
     item.favorite = !item.favorite;
     this.updateMetadata(item);
   }

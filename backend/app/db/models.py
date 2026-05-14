@@ -35,6 +35,7 @@ class Book(Base):
 
 class LibraryItem(Base):
     __tablename__ = "library_items"
+    # A user can track a given book only once; metadata updates happen on that row.
     __table_args__ = (UniqueConstraint("user_id", "book_id", name="uq_library_user_book"),)
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
@@ -61,6 +62,7 @@ class LibraryItem(Base):
 
 class BookReview(Base):
     __tablename__ = "personal_book_reviews"
+    # Reviews are intentionally upserted: one personal opinion per user/book pair.
     __table_args__ = (UniqueConstraint("user_id", "book_id", name="uq_review_user_book"),)
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)

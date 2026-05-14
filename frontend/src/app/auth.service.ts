@@ -17,6 +17,7 @@ export class AuthService {
   constructor(private readonly api: ApiService, private readonly http: HttpClient) {}
 
   login(email: string, password: string): Observable<TokenResponse> {
+    // FastAPI's OAuth2PasswordRequestForm expects form-encoded credentials, not JSON.
     const body = new HttpParams()
       .set('username', email)
       .set('password', password)
@@ -26,6 +27,7 @@ export class AuthService {
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
     }).pipe(
       tap(token => {
+        // Keep the token client-side so refreshes do not force a new login during demos.
         localStorage.setItem('auth_token', token.access_token);
       })
     );
@@ -36,6 +38,7 @@ export class AuthService {
   }
 
   logout(): void {
+    // Removing the token is enough because the backend validates stateless JWTs.
     localStorage.removeItem('auth_token');
   }
 

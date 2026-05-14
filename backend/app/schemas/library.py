@@ -6,6 +6,7 @@ from app.schemas.books import BookPayload
 
 
 class LibraryItemCreate(BookPayload):
+    # Creation combines the external book payload with the first set of personal metadata.
     category: str = "General"
     reading_status: str = "to_read"
     priority: str = "medium"
@@ -22,6 +23,7 @@ class LibraryItemCreate(BookPayload):
 
 
 class LibraryItemUpdate(BaseModel):
+    # Partial update DTO: omitted fields keep their current database values.
     category: str | None = None
     reading_status: str | None = None
     priority: str | None = None
@@ -40,6 +42,7 @@ class LibraryItemUpdate(BaseModel):
 class LibraryItemRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
+    # Read responses include the nested book to avoid extra frontend round trips.
     id: int
     user_id: int
     book_id: int

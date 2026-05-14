@@ -15,6 +15,8 @@ class UserRepository:
     async def create(self, *, email: str, name: str, hashed_password: str) -> User:
         user = User(email=email, name=name, hashed_password=hashed_password)
         self.db.add(user)
+        # Commit at repository boundaries so service tests can reason about
+        # persisted state without relying on outer transaction side effects.
         await self.db.commit()
         await self.db.refresh(user)
         return user

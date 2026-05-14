@@ -10,13 +10,17 @@
       </div>
 
       <nav class="nav">
-        <a routerLink="/dashboard" routerLinkActive="active-link" *ngIf="auth.isLoggedIn()">Dashboard</a>
-        <a routerLink="/search" routerLinkActive="active-link">Explorer</a>
-        <a routerLink="/library" routerLinkActive="active-link">Bibliotheque</a>
-        <a routerLink="/recommendations" routerLinkActive="active-link">Suggestions</a>
-        <a routerLink="/login" routerLinkActive="active-link" *ngIf="!auth.isLoggedIn()">Connexion</a>
-        <a routerLink="/register" routerLinkActive="active-link" *ngIf="!auth.isLoggedIn()">Inscription</a>
-        <button *ngIf="auth.isLoggedIn()" (click)="logout()">Deconnexion</button>
+        <ng-container *ngIf="auth.isLoggedIn(); else guestNavigation">
+          <a routerLink="/dashboard" routerLinkActive="active-link">Dashboard</a>
+          <a routerLink="/search" routerLinkActive="active-link">Explorer</a>
+          <a routerLink="/library" routerLinkActive="active-link">Bibliotheque</a>
+          <a routerLink="/recommendations" routerLinkActive="active-link">Suggestions</a>
+          <button type="button" (click)="logout()">Deconnexion</button>
+        </ng-container>
+
+        <ng-template #guestNavigation>
+          <a routerLink="/login" routerLinkActive="active-link">Connexion</a>
+        </ng-template>
       </nav>
     </header>
 

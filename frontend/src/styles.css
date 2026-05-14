@@ -1,15 +1,17 @@
 :root {
   color-scheme: dark;
-  --bg: #050505;
-  --bg-elevated: #0d0d0f;
-  --panel: rgba(16, 16, 18, 0.92);
-  --panel-soft: rgba(255, 255, 255, 0.04);
-  --line: rgba(255, 255, 255, 0.1);
+  /* Shared design tokens keep visual changes deployable without editing components. */
+  --bg: #090a0d;
+  --bg-elevated: #12151a;
+  --panel: #1a1d23;
+  --panel-raised: #22262e;
+  --panel-soft: #252a33;
+  --line: rgba(255, 255, 255, 0.18);
   --text: #f5f7fb;
-  --muted: #8e9199;
+  --muted: #b5bbc6;
   --accent: #f4f6f8;
   --accent-dark: #121214;
-  --shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+  --shadow: 0 24px 60px rgba(0, 0, 0, 0.32);
   --radius-xl: 32px;
   --radius-lg: 24px;
   --radius-md: 18px;
@@ -27,12 +29,13 @@ body {
   margin: 0;
   min-height: 100%;
   background:
-    radial-gradient(circle at top, rgba(255, 255, 255, 0.08), transparent 20%),
-    radial-gradient(circle at 20% 20%, rgba(77, 86, 255, 0.1), transparent 24%),
-    linear-gradient(180deg, #09090b 0%, #050505 100%);
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.08), transparent 18%),
+    radial-gradient(circle at 20% 18%, rgba(76, 96, 140, 0.16), transparent 26%),
+    linear-gradient(180deg, #101218 0%, #090a0d 100%);
 }
 
 body {
+  /* Use system fonts to avoid external asset dependencies in Docker and CI. */
   font-family: "Segoe UI", Arial, sans-serif;
   color: var(--text);
 }

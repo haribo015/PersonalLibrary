@@ -42,6 +42,7 @@ export class RecommendationsComponent implements OnInit {
   addBook(book: Book): void {
     this.bookService.addToLibrary(book).subscribe({
       next: () => {
+        // Keep the recommendation card in place but prevent duplicate add attempts.
         this.recommendations = this.recommendations.map(item =>
           item.google_book_id === book.google_book_id
             ? { ...item, already_in_library: true }
@@ -55,6 +56,7 @@ export class RecommendationsComponent implements OnInit {
   }
 
   openDetails(book: Book): void {
+    // Reuse the detail cache so recommendations feel as responsive as search results.
     this.bookService.setSelectedBook(book);
     this.router.navigate(['/books', book.google_book_id], { state: { book } });
   }

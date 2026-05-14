@@ -1,3 +1,4 @@
+// Mirrors the backend BookPayload plus UI hints returned by search endpoints.
 export interface Book {
   id?: number;
   google_book_id: string;

@@ -29,6 +29,7 @@ async def add_book_to_library(
     db: Annotated[AsyncSession, Depends(get_db)],
     current_user: Annotated[User, Depends(get_current_active_user)],
 ):
+    # The route stays thin: ownership checks and metadata validation live in the service.
     service = LibraryService(LibraryRepository(db), BookRepository(db))
     return await service.add_book(current_user.id, book_in)
 

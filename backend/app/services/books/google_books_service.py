@@ -27,11 +27,14 @@ def _normalize_thumbnail(url: str | None) -> str | None:
     parts = urlsplit(url)
     if parts.scheme != "http":
         return url
+    # Google may return HTTP image URLs; normalize to HTTPS so browsers do not
+    # block covers when the app is served behind the gateway.
     return urlunsplit(("https", parts.netloc, parts.path, parts.query, parts.fragment))
 
 
 def _score_result(query: str, title: str, authors: Iterable[str], ratings_count: int | None) -> tuple[int, int]:
     lowered_query = query.lower()
+    # Prefer direct title/author matches, then use popularity as a stable tie-breaker.
     title_score = 2 if lowered_query in title.lower() else 0
     author_score = 1 if any(lowered_query in author.lower() for author in authors) else 0
     popularity = ratings_count or 0
@@ -43,6 +46,8 @@ def _build_request_params(*, fields: str, extra_params: dict[str, str | int] | N
     if extra_params:
         params.update(extra_params)
     if settings.google_books_api_key:
+        # The API key is optional for local demos but used automatically when CI or
+        # deployment environments provide it.
         params["key"] = settings.google_books_api_key
     return params
 
@@ -74,10 +79,17 @@ def _build_search_result(
 
 
 def _build_book_details(volume_info: dict) -> GoogleBookDetails:
+    identifiers = {
+        identifier.get("type"): identifier.get("identifier")
+        for identifier in volume_info.get("industryIdentifiers") or []
+        if identifier.get("type") and identifier.get("identifier")
+    }
     return GoogleBookDetails(
         subtitle=volume_info.get("subtitle"),
         publisher=volume_info.get("publisher"),
         page_count=volume_info.get("pageCount"),
+        isbn_13=identifiers.get("ISBN_13"),
+        isbn_10=identifiers.get("ISBN_10"),
         categories=volume_info.get("categories") or [],
         language=volume_info.get("language"),
         average_rating=volume_info.get("averageRating"),
@@ -130,6 +142,7 @@ class GoogleBooksService:
 
         saved_google_ids: set[str] = set()
         if library_repository is not None and user_id is not None:
+            # Marking saved books at search time prevents duplicate add actions in the UI.
             saved_google_ids = {
                 item.book.google_book_id for item in await library_repository.list_for_user(user_id)
             }
@@ -139,6 +152,8 @@ class GoogleBooksService:
             result, score = _build_search_result(item, normalized_query=normalized_query, saved_google_ids=saved_google_ids)
             previous = deduped.get(result.google_book_id)
             if previous is None or score > previous[1]:
+                # Google can return duplicate volume ids; keep the strongest card
+                # so result ordering remains deterministic.
                 deduped[result.google_book_id] = (result, score)
 
         return [item for item, _ in sorted(deduped.values(), key=lambda entry: entry[1], reverse=True)]
@@ -147,7 +162,7 @@ class GoogleBooksService:
         params = _build_request_params(
             fields=(
                 "volumeInfo/subtitle,volumeInfo/publisher,volumeInfo/pageCount,"
-                "volumeInfo/categories,volumeInfo/language,volumeInfo/averageRating,"
+                "volumeInfo/industryIdentifiers,volumeInfo/categories,volumeInfo/language,volumeInfo/averageRating,"
                 "volumeInfo/ratingsCount,volumeInfo/previewLink,volumeInfo/infoLink,"
                 "volumeInfo/maturityRating"
             ),
@@ -178,6 +193,8 @@ class GoogleBooksService:
                     return response.json()
                 except httpx.HTTPStatusError as exc:
                     if self._can_retry(exc.response.status_code, attempt):
+                        # Retry only transient provider failures; client errors
+                        # should fail fast and surface a useful service response.
                         await self._sleep_before_retry(attempt)
                         continue
                     raise HTTPException(
@@ -222,4 +239,5 @@ class GoogleBooksService:
 
     @staticmethod
     async def _sleep_before_retry(attempt: int) -> None:
+        # Small linear backoff keeps tests fast while avoiding immediate retries in dev.
         await asyncio.sleep(0.6 * (attempt + 1))

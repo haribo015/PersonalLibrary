@@ -1,8 +1,10 @@
+// Uniform metric rows make dashboard cards and lists render from the same shape.
 export interface DashboardMetric {
   label: string;
   value: number;
 }
 
+// Complete dashboard payload loaded by a single API call.
 export interface DashboardOverview {
   books_in_library: number;
   books_read_this_year: number;

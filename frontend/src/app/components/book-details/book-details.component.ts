@@ -26,6 +26,8 @@ export class BookDetailsComponent implements OnInit {
     const cachedBook = this.bookService.getSelectedBook();
     const googleBookId = this.route.snapshot.paramMap.get('googleBookId');
 
+    // Prefer navigation state for snappy rendering, then fall back to session cache
+    // for browser refreshes before the API overview resolves.
     this.book = navigationBook
       ?? historyBook
       ?? (cachedBook && cachedBook.google_book_id === googleBookId ? cachedBook : null);
@@ -37,6 +39,7 @@ export class BookDetailsComponent implements OnInit {
 
     this.bookService.getBookOverview(googleBookId).subscribe({
       next: overview => {
+        // The API response is canonical and can include saved-library and review data.
         this.overview = overview;
         this.book = overview.book;
         this.loading = false;
@@ -53,7 +56,7 @@ export class BookDetailsComponent implements OnInit {
       reading: 'En cours',
       finished: 'Termine',
       paused: 'En pause',
-      dnf: 'DNF',
+      dnf: 'Abandonne',
     };
     return status ? (labels[status] ?? status) : 'Non renseigne';
   }
@@ -76,5 +79,15 @@ export class BookDetailsComponent implements OnInit {
       it: 'Italien',
     };
     return language ? (labels[language] ?? language.toUpperCase()) : 'Non renseignee';
+  }
+
+  returnToSearch(): void {
+    const query = this.bookService.getLastSearchQuery();
+    if (query) {
+      this.router.navigate(['/search'], { queryParams: { q: query } });
+      return;
+    }
+
+    this.router.navigate(['/search']);
   }
 }

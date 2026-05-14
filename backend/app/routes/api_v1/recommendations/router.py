@@ -20,5 +20,6 @@ async def get_recommendations(
     db: Annotated[AsyncSession, Depends(get_db)],
     current_user: Annotated[User, Depends(get_current_active_user)],
 ):
+    # Compose repositories here so recommendation logic remains testable without FastAPI.
     service = RecommendationService(LibraryRepository(db), ReviewRepository(db), GoogleBooksService())
     return await service.get_recommendations(current_user.id)

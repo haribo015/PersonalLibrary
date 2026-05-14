@@ -15,6 +15,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { SearchComponent } from './components/search/search.component';
 
 @NgModule({
+  // Root module wires feature screens once; feature behavior stays inside components/services.
   declarations: [
     AppComponent,
     BookEditComponent,

@@ -1,3 +1,4 @@
+// Authenticated user projection; sensitive fields are intentionally absent.
 export interface User {
   id: number;
   name: string;

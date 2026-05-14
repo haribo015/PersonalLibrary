@@ -9,15 +9,17 @@ import { LoginComponent } from './components/login/login.component';
 import { RecommendationsComponent } from './components/recommendations/recommendations.component';
 import { RegisterComponent } from './components/register/register.component';
 import { SearchComponent } from './components/search/search.component';
+import { authGuard } from './auth.guard';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'search', pathMatch: 'full' },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'books/:googleBookId', component: BookDetailsComponent },
-  { path: 'library/:bookId/edit', component: BookEditComponent },
-  { path: 'search', component: SearchComponent },
-  { path: 'library', component: LibraryComponent },
-  { path: 'recommendations', component: RecommendationsComponent },
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  // Product routes are guarded here so components can stay focused on their data flows.
+  { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
+  { path: 'books/:googleBookId', component: BookDetailsComponent, canActivate: [authGuard] },
+  { path: 'library/:bookId/edit', component: BookEditComponent, canActivate: [authGuard] },
+  { path: 'search', component: SearchComponent, canActivate: [authGuard] },
+  { path: 'library', component: LibraryComponent, canActivate: [authGuard] },
+  { path: 'recommendations', component: RecommendationsComponent, canActivate: [authGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
 ];

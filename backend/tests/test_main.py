@@ -15,13 +15,13 @@ def test_cors_preflight_is_allowed_for_register_endpoint() -> None:
     response = client.options(
         "/api/v1/auth/register",
         headers={
-            "Origin": "http://localhost:4200",
+            "Origin": "http://localhost:9000",
             "Access-Control-Request-Method": "POST",
         },
     )
 
     assert response.status_code == 200
-    assert response.headers["access-control-allow-origin"] == "http://localhost:4200"
+    assert response.headers["access-control-allow-origin"] == "http://localhost:9000"
 
 
 class FakeConnection:

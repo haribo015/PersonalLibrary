@@ -28,6 +28,8 @@ class BookRepository:
     ) -> Book:
         existing = await self.get_by_google_book_id(google_book_id)
         if existing is not None:
+            # Google Books metadata can improve over time; refresh our copy while
+            # preserving user-specific library and review rows attached to this book.
             existing.title = title
             existing.authors = authors
             existing.description = description

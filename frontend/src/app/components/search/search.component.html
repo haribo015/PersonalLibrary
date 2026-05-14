@@ -2,10 +2,6 @@
   <section class="hero">
     <span class="hero-tag">Discovery</span>
     <h2>Une bibliotheque personnelle, pensee comme une vraie interface produit.</h2>
-    <p>
-      Recherchez dans Google Books, comparez rapidement les ouvrages et ajoutez les plus
-      interessants a votre collection personnelle.
-    </p>
 
     <form class="searchbar" (submit)="$event.preventDefault(); search();">
       <input type="text" [(ngModel)]="query" name="query" placeholder="Rechercher un titre, un auteur ou un theme" />
@@ -17,7 +13,6 @@
     <div class="panel-head">
       <div>
         <h3>Resultats</h3>
-        <div class="section-note">Recherche optimise par pertinence Google Books.</div>
       </div>
       <div class="muted" *ngIf="books.length">{{ books.length }} livre(s)</div>
     </div>

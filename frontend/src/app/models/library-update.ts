@@ -1,3 +1,4 @@
+// Partial update contract for inline edits and the full edit form.
 export interface LibraryUpdate {
   category?: string;
   reading_status?: string;

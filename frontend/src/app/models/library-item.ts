@@ -1,5 +1,6 @@
 import { Book } from './book';
 
+// Personal tracking state for one saved book in the current user's library.
 export interface LibraryItem {
   id: number;
   user_id: number;

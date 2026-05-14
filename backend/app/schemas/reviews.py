@@ -6,6 +6,7 @@ from app.schemas.books import BookPayload
 
 
 class ReviewUpsert(BaseModel):
+    # Rating bounds are enforced at the API edge before service rules run.
     book_id: int
     rating: int = Field(ge=1, le=5)
     comment: str | None = None
@@ -14,6 +15,7 @@ class ReviewUpsert(BaseModel):
 class UserBookReviewRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
+    # Include the book snapshot for dashboard/review screens without a second query.
     id: int
     user_id: int
     book_id: int

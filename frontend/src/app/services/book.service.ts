@@ -8,7 +8,9 @@ import { ApiService } from './api.service';
   providedIn: 'root',
 })
 export class BookService {
+  // Session storage preserves navigation context without leaking it across browser sessions.
   private readonly selectedBookStorageKey = 'selected_book';
+  private readonly lastSearchQueryStorageKey = 'last_search_query';
 
   constructor(private readonly api: ApiService) {}
 
@@ -21,6 +23,7 @@ export class BookService {
   }
 
   addToLibrary(book: Book): Observable<LibraryItem> {
+    // Only send the fields owned by the API contract; UI-only flags stay client-side.
     return this.api.post<LibraryItem>(`/library/`, {
       google_book_id: book.google_book_id,
       title: book.title,
@@ -64,11 +67,22 @@ export class BookService {
   }
 
   setSelectedBook(book: Book): void {
+    // Cache the last opened card so a direct detail refresh can render immediately
+    // while the canonical overview request is still loading.
     sessionStorage.setItem(this.selectedBookStorageKey, JSON.stringify(book));
   }
 
   getSelectedBook(): Book | null {
     const raw = sessionStorage.getItem(this.selectedBookStorageKey);
     return raw ? JSON.parse(raw) as Book : null;
+  }
+
+  setLastSearchQuery(query: string): void {
+    // Keep the search input stable when the user returns from a detail page.
+    sessionStorage.setItem(this.lastSearchQueryStorageKey, query);
+  }
+
+  getLastSearchQuery(): string {
+    return sessionStorage.getItem(this.lastSearchQueryStorageKey) ?? '';
   }
 }

@@ -6,12 +6,15 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class ApiService {
-  public apiBase = globalThis.location.port === '4200' ? 'http://localhost:8000/api/v1' : '/api/v1';
+  // Use the gateway-relative prefix so the same frontend build works in Docker,
+  // local development, and CI smoke tests.
+  public readonly apiBase = '/api/v1';
 
   constructor(private readonly http: HttpClient) {}
 
   private getAuthHeaders(): HttpHeaders | undefined {
     const token = localStorage.getItem('auth_token');
+    // Anonymous requests remain possible; protected routes will reject them server-side.
     return token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
   }
 

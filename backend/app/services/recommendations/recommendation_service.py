@@ -24,11 +24,15 @@ class RecommendationService:
         seed_terms: list[str] = []
         for review in reviews:
             if review.rating >= 4:
+                # High-rated books are a strong signal, so authors and meaningful
+                # title words become the first recommendation seeds.
                 if review.book.authors:
                     seed_terms.extend(review.book.authors.split(", "))
                 seed_terms.extend(word for word in review.book.title.split() if len(word) > 3)
 
         if not seed_terms:
+            # Cold-start fallback: use recent library titles before returning an
+            # empty state, keeping the feature useful for users without reviews.
             for item in library_items[:4]:
                 seed_terms.extend(word for word in item.book.title.split() if len(word) > 3)
 
@@ -37,6 +41,8 @@ class RecommendationService:
 
         most_common_terms = [term for term, _ in Counter(seed_terms).most_common(3)]
         query = " ".join(most_common_terms)
+        # Ask for extra results because saved books are filtered out after Google
+        # responds; this preserves the requested visible limit.
         recommendations = await self.google_books_service.search_books(
             query,
             max_results=limit * 2,

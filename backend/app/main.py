@@ -22,6 +22,8 @@ app.include_router(api_router, prefix=settings.api_v1_str)
 async def startup_event() -> None:
     async_engine: AsyncEngine = session.engine
     async with async_engine.begin() as conn:
+        # Lightweight bootstrap for the student/local deployment: schema creation
+        # and additive migrations are idempotent so repeated container restarts stay safe.
         await conn.run_sync(models.Base.metadata.create_all)
         await conn.execute(text("ALTER TABLE library_items ADD COLUMN IF NOT EXISTS category VARCHAR(64) NOT NULL DEFAULT 'General'"))
         await conn.execute(text("ALTER TABLE library_items ADD COLUMN IF NOT EXISTS reading_status VARCHAR(32) NOT NULL DEFAULT 'to_read'"))

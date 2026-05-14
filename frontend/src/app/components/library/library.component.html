@@ -2,17 +2,12 @@
   <section class="hero">
     <span class="hero-tag">Library</span>
     <h2>Votre collection personnelle, accessible et simple a piloter.</h2>
-    <p>
-      Tous vos livres sauvegardes sont centralises ici. Chaque carte reste compacte pour une lecture
-      rapide, et l'edition s'ouvre maintenant sur une page dediee.
-    </p>
   </section>
 
   <section class="panel">
     <div class="panel-head">
       <div>
         <h3>Ma bibliotheque</h3>
-        <div class="section-note">Filtrez et classez vos livres par progression, categorie et priorite.</div>
       </div>
       <div class="muted" *ngIf="libraryItems.length">{{ filteredLibraryItems.length }} / {{ libraryItems.length }} livre(s)</div>
     </div>

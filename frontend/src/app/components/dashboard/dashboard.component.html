@@ -2,17 +2,12 @@
   <section class="hero">
     <span class="hero-tag">Dashboard</span>
     <h2>Votre progression de lecture en un coup d'oeil.</h2>
-    <p>
-      Suivez vos livres lus cette annee, vos lectures en cours et les tendances de votre
-      bibliotheque personnelle.
-    </p>
   </section>
 
   <section class="panel">
     <div class="panel-head">
       <div>
         <h3>Vue d'ensemble</h3>
-        <div class="section-note">Des indicateurs simples pour piloter vos habitudes de lecture.</div>
       </div>
     </div>
     <div class="filter-grid" *ngIf="dashboard">
@@ -23,7 +18,7 @@
       <div class="field-row goal-actions">
         <label for="goal_progression">Progression</label>
         <div class="goal-inline">
-          <div id="goal_progression" class="goal-badge">{{ dashboard.books_read_this_year }} / {{ dashboard.reading_goal }} livres</div>
+          <div id="goal_progression" class="goal-badge">{{ dashboard.books_read_this_year }} / {{ dashboard.reading_goal }} livres termines</div>
           <button type="button" class="ghost" (click)="saveGoal()" [disabled]="savingGoal">Mettre a jour</button>
         </div>
       </div>
@@ -34,40 +29,58 @@
 
   <section class="stats-grid" *ngIf="dashboard">
     <article class="stat-card">
-      <span>Livres en bibliotheque</span>
-      <strong>{{ dashboard.books_in_library }}</strong>
+      <div>
+        <small>Bibliotheque</small>
+        <strong>{{ dashboard.books_in_library }}</strong>
+      </div>
     </article>
     <article class="stat-card">
-      <span>Lus cette annee</span>
-      <strong>{{ dashboard.books_read_this_year }}</strong>
+      <div>
+        <small>Termines</small>
+        <strong>{{ dashboard.books_read_this_year }}</strong>
+      </div>
     </article>
     <article class="stat-card">
-      <span>En cours</span>
-      <strong>{{ dashboard.books_in_progress }}</strong>
+      <div>
+        <small>En cours</small>
+        <strong>{{ dashboard.books_in_progress }}</strong>
+      </div>
     </article>
     <article class="stat-card">
-      <span>A lire</span>
-      <strong>{{ dashboard.books_to_read }}</strong>
+      <div>
+        <small>A lire</small>
+        <strong>{{ dashboard.books_to_read }}</strong>
+      </div>
     </article>
     <article class="stat-card">
-      <span>DNF</span>
-      <strong>{{ dashboard.books_dnf }}</strong>
+      <div>
+        <small>Abandonnes</small>
+        <strong>{{ dashboard.books_dnf }}</strong>
+      </div>
     </article>
     <article class="stat-card">
-      <span>Taux de completion</span>
-      <strong>{{ dashboard.completion_rate }}%</strong>
+      <div>
+        <small>Livres termines</small>
+        <strong>{{ dashboard.completion_rate }}%</strong>
+      </div>
     </article>
     <article class="stat-card">
-      <span>Note moyenne</span>
-      <strong>{{ dashboard.average_rating }}</strong>
+      <div>
+        <small>Note moyenne</small>
+        <strong>{{ dashboard.average_rating }}/5</strong>
+      </div>
     </article>
     <article class="stat-card">
-      <span>Favoris</span>
-      <strong>{{ dashboard.favorite_books }}</strong>
+      <div>
+        <small>Favoris</small>
+        <strong>{{ dashboard.favorite_books }}</strong>
+      </div>
     </article>
     <article class="stat-card">
-      <span>Objectif annuel</span>
-      <strong>{{ dashboard.reading_goal_progress }}%</strong>
+      <div>
+        <small>Objectif annuel</small>
+        <strong>{{ dashboard.reading_goal_progress }}%</strong>
+      </div>
     </article>
   </section>
 
@@ -76,12 +89,11 @@
       <div class="panel-head">
         <div>
           <h3>Categories</h3>
-          <div class="section-note">Les genres et familles de lecture les plus presents.</div>
         </div>
       </div>
       <div class="metric-list">
         <div *ngFor="let metric of dashboard.categories" class="metric-row">
-          <span>{{ metric.label }}</span>
+          <span>{{ formatMetricLabel(metric.label) }}</span>
           <strong>{{ metric.value }}</strong>
         </div>
       </div>
@@ -91,12 +103,11 @@
       <div class="panel-head">
         <div>
           <h3>Statuts</h3>
-          <div class="section-note">Visualisez l'equilibre de votre pipeline de lecture.</div>
         </div>
       </div>
       <div class="metric-list">
         <div *ngFor="let metric of dashboard.statuses" class="metric-row">
-          <span>{{ metric.label }}</span>
+          <span>{{ formatMetricLabel(metric.label) }}</span>
           <strong>{{ metric.value }}</strong>
         </div>
       </div>
@@ -106,12 +117,11 @@
       <div class="panel-head">
         <div>
           <h3>Formats</h3>
-          <div class="section-note">Papier, ebook ou audio selon vos habitudes.</div>
         </div>
       </div>
       <div class="metric-list">
         <div *ngFor="let metric of dashboard.formats" class="metric-row">
-          <span>{{ metric.label }}</span>
+          <span>{{ formatMetricLabel(metric.label) }}</span>
           <strong>{{ metric.value }}</strong>
         </div>
       </div>
@@ -121,12 +131,11 @@
       <div class="panel-head">
         <div>
           <h3>Priorites</h3>
-          <div class="section-note">Ce que vous souhaitez lire rapidement en premier.</div>
         </div>
       </div>
       <div class="metric-list">
         <div *ngFor="let metric of dashboard.priorities" class="metric-row">
-          <span>{{ metric.label }}</span>
+          <span>{{ formatMetricLabel(metric.label) }}</span>
           <strong>{{ metric.value }}</strong>
         </div>
       </div>
@@ -136,7 +145,6 @@
       <div class="panel-head">
         <div>
           <h3>Tags</h3>
-          <div class="section-note">Vos mots-cles personnels pour retrouver et organiser vos lectures.</div>
         </div>
       </div>
       <div class="metric-list">

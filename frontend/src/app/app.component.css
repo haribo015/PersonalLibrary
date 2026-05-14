@@ -3,6 +3,7 @@
 }
 
 .app-shell {
+  /* Page shell padding is centralized so feature components do not manage viewport spacing. */
   min-height: 100vh;
   padding: 20px;
 }
@@ -23,7 +24,7 @@
   padding: 20px 24px;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: rgba(8, 8, 10, 0.78);
+  background: rgba(26, 29, 35, 0.9);
   backdrop-filter: blur(18px);
   box-shadow: var(--shadow);
 }
@@ -76,10 +77,11 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   min-height: 42px;
   padding: 0 16px;
-  border: 1px solid transparent;
-  border-radius: 999px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
   background: transparent;
   color: var(--muted);
   text-decoration: none;
@@ -91,9 +93,11 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   min-height: 46px;
   padding: 0 18px;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
   text-decoration: none;
   font-weight: 700;
   transition: transform 120ms ease, opacity 120ms ease;
@@ -108,7 +112,7 @@
 .nav a:hover,
 .nav button:hover {
   border-color: var(--line);
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.1);
   color: var(--text);
 }
 
@@ -134,15 +138,15 @@ main {
 }
 
 .hero {
-  min-height: min(44vh, 480px);
+  min-height: min(32vh, 360px);
   padding: 42px;
   display: grid;
   align-content: end;
   gap: 16px;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
-    linear-gradient(140deg, rgba(105, 112, 255, 0.18), transparent 36%),
-    rgba(10, 10, 12, 0.9);
+    linear-gradient(140deg, rgba(120, 136, 180, 0.22), transparent 40%),
+    var(--panel-raised);
 }
 
 .hero-tag {
@@ -162,8 +166,6 @@ main {
   letter-spacing: -0.06em;
 }
 
-.hero p,
-.section-note,
 .muted,
 .info-panel p,
 .info-panel li {
@@ -171,13 +173,8 @@ main {
   line-height: 1.7;
 }
 
-.hero p {
-  max-width: 720px;
-  margin: 0;
-  font-size: 18px;
-}
-
 .searchbar {
+  /* The search form keeps a stable two-column shape on desktop and collapses below. */
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 14px;
@@ -216,8 +213,8 @@ main {
   min-height: 42px;
   padding: 0 14px;
   border: 1px solid var(--line);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-sm);
+  background: var(--panel-soft);
   color: var(--text);
 }
 
@@ -236,6 +233,7 @@ main {
 }
 
 .book-grid {
+  /* Auto-fit keeps result cards responsive without component-specific media logic. */
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 18px;
@@ -256,7 +254,7 @@ main {
   padding: 22px;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(0, 0, 0, 0.44)),
-    #131417;
+    #2a2f38;
   background-size: cover;
   background-position: center;
 }
@@ -264,7 +262,7 @@ main {
 .book-cover.no-image {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.44)),
-    linear-gradient(135deg, #121214 0%, #1d1f24 100%);
+    linear-gradient(135deg, #242932 0%, #303642 100%);
 }
 
 .cover-chip {
@@ -272,7 +270,7 @@ main {
   align-items: center;
   padding: 8px 12px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(26, 29, 35, 0.82);
   backdrop-filter: blur(12px);
   color: var(--text);
   font-size: 12px;
@@ -376,8 +374,8 @@ input:focus,
 select:focus,
 textarea:focus {
   border-color: rgba(255, 255, 255, 0.22);
-  background: rgba(255, 255, 255, 0.06);
-  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.04);
+  background: #2c323d;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.06);
 }
 
 textarea {
@@ -387,14 +385,20 @@ textarea {
 
 .book-actions {
   display: flex;
+  justify-content: center;
   gap: 12px;
   flex-wrap: wrap;
   margin-top: auto;
 }
 
 button {
-  border: 0;
-  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: var(--radius-sm);
   background: var(--accent);
   color: var(--accent-dark);
   padding: 13px 18px;
@@ -410,18 +414,19 @@ button:hover {
 }
 
 button.secondary {
-  background: transparent;
+  background: var(--panel-soft);
   color: var(--text);
-  border: 1px solid var(--line);
+  border-color: var(--line);
 }
 
 button.ghost {
-  background: rgba(255, 255, 255, 0.06);
+  background: #2c323d;
   color: var(--text);
+  border-color: var(--line);
 }
 
 .ghost-link {
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--panel-soft);
   color: var(--text);
 }
 
@@ -448,7 +453,8 @@ button[disabled] {
 
 .auth-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 360px;
+  grid-template-columns: minmax(0, 560px);
+  justify-content: center;
   gap: 20px;
 }
 
@@ -456,23 +462,48 @@ button[disabled] {
   font-size: clamp(30px, 4.5vw, 48px);
 }
 
+.auth-switch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+}
+
+.auth-switch a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 700;
+}
+
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: 16px;
 }
 
 .stat-card {
   padding: 22px;
-  border: 1px solid var(--line);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.04);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
+    var(--panel-raised);
   box-shadow: var(--shadow);
 }
 
-.stat-card span {
+.stat-card small {
   display: block;
-  margin-bottom: 12px;
   color: var(--muted);
   font-size: 12px;
   letter-spacing: 0.1em;
@@ -480,6 +511,8 @@ button[disabled] {
 }
 
 .stat-card strong {
+  display: block;
+  margin-top: 8px;
   font-size: 34px;
   letter-spacing: -0.05em;
 }
@@ -504,7 +537,7 @@ button[disabled] {
   justify-content: space-between;
   gap: 16px;
   padding: 14px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .metric-row:last-child {
@@ -512,7 +545,7 @@ button[disabled] {
 }
 
 .metric-row span {
-  color: var(--muted);
+  color: #c4c9d2;
 }
 
 .metric-row strong {
@@ -530,7 +563,7 @@ button[disabled] {
   padding: 20px;
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--panel-soft);
 }
 
 .detail-block h4,
@@ -591,6 +624,10 @@ button[disabled] {
   margin-top: 20px;
 }
 
+.details-return-actions {
+  margin-top: 36px;
+}
+
 .info-panel ul {
   margin: 0;
   padding-left: 18px;
@@ -628,6 +665,7 @@ button[disabled] {
 }
 
 @media (max-width: 720px) {
+  /* Mobile layout favors full-width controls to avoid cramped touch targets. */
   .app-shell {
     padding: 10px;
   }

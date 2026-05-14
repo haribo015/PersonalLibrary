@@ -16,6 +16,8 @@ class LibraryService:
     async def add_book(self, user_id: int, book_in: LibraryItemCreate):
         payload = book_in.model_dump()
         metadata = self._extract_metadata(payload)
+        # Store the shared Google Books payload once, then attach user-specific
+        # reading metadata through the library item.
         book = await self.book_repository.upsert_from_google_payload(**payload)
         existing = await self.library_repository.get_for_user_and_book(user_id, book.id)
         if existing is not None:
@@ -64,6 +66,7 @@ class LibraryService:
         if reading_status is None:
             return
         if reading_status not in {"finished", "dnf"}:
+            # Non-terminal statuses should not keep an outdated completion date.
             payload.setdefault("finished_at", None)
             return
         if reading_status == "finished" and "finished_at" not in payload:
@@ -73,6 +76,7 @@ class LibraryService:
     def _validate_page_progress(existing, payload: dict) -> None:
         pages_read = payload.get("pages_read")
         if pages_read is not None and "pages_total" not in payload:
+            # Partial updates must still be validated against the stored total.
             LibraryService._ensure_pages_read_within_limit(pages_read, existing.pages_total)
 
         pages_total = payload.get("pages_total")

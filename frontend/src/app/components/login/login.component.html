@@ -2,7 +2,6 @@
   <section class="auth-panel">
     <span class="hero-tag">Account</span>
     <h2>Connexion</h2>
-    <p class="section-note">Accedez a votre bibliotheque personnelle et a vos recommandations.</p>
 
     <form class="review-form" (submit)="$event.preventDefault(); login();">
       <div class="field-row">
@@ -18,10 +17,10 @@
       <button type="button" (click)="login()">Se connecter</button>
       <p class="error" *ngIf="error">{{ error }}</p>
     </form>
-  </section>
 
-  <aside class="info-panel">
-    <h3>Mode personnel</h3>
-    <p>Le projet est maintenant pense pour une bibliotheque individuelle, avec conservation de vos livres et avis cote serveur.</p>
-  </aside>
+    <div class="auth-switch">
+      <span>Pas encore de compte ?</span>
+      <a routerLink="/register">Creer un compte</a>
+    </div>
+  </section>
 </section>

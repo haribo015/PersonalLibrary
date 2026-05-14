@@ -44,6 +44,7 @@ export class DashboardComponent implements OnInit {
 
   saveGoal(): void {
     if (this.readingGoal < 1) {
+      // Validate locally before hitting the API to avoid an unnecessary round trip.
       this.error = 'L objectif de lecture doit etre superieur a 0.';
       return;
     }
@@ -60,5 +61,21 @@ export class DashboardComponent implements OnInit {
         this.savingGoal = false;
       },
     });
+  }
+
+  formatMetricLabel(value: string): string {
+    // Backend metrics use stable enum keys; the dashboard translates them for display.
+    const labels: Record<string, string> = {
+      dnf: 'Abandonne',
+      finished: 'Termine',
+      high: 'Haute',
+      low: 'Basse',
+      medium: 'Moyenne',
+      paper: 'Papier',
+      reading: 'En cours',
+      to_read: 'A lire',
+    };
+
+    return labels[value] ?? value;
   }
 }

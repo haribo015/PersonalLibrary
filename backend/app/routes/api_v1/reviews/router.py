@@ -21,6 +21,8 @@ async def upsert_review(
     db: Annotated[AsyncSession, Depends(get_db)],
     current_user: Annotated[User, Depends(get_current_active_user)],
 ):
+    # Reviews are scoped to the authenticated user; the service verifies the book
+    # belongs to that user's library before accepting the note.
     service = ReviewService(ReviewRepository(db), LibraryRepository(db), BookRepository(db))
     return await service.upsert_review(current_user.id, review_in)
 

@@ -2,7 +2,6 @@
   <section class="hero details-hero">
     <span class="hero-tag">Overview</span>
     <h2>{{ book.title }}</h2>
-    <p>{{ overview?.google_details?.subtitle || book.authors || 'Auteur non renseigne' }}</p>
   </section>
 
   <section class="details-layout">
@@ -55,7 +54,6 @@
       <div class="panel-head">
         <div>
           <h3>Overview du livre</h3>
-          <div class="section-note">Une vue detaillee avant ajout ou consultation.</div>
         </div>
       </div>
 
@@ -83,9 +81,9 @@
               <dt>Nombre d'avis</dt>
               <dd>{{ overview?.google_details?.ratings_count }}</dd>
             </div>
-            <div *ngIf="overview?.google_details?.maturity_rating">
-              <dt>Classification</dt>
-              <dd>{{ overview?.google_details?.maturity_rating }}</dd>
+            <div *ngIf="overview?.google_details?.isbn_13 || overview?.google_details?.isbn_10">
+              <dt>ISBN</dt>
+              <dd>{{ overview?.google_details?.isbn_13 || overview?.google_details?.isbn_10 }}</dd>
             </div>
           </dl>
           <div class="book-actions link-actions" *ngIf="overview?.google_details?.preview_link || overview?.google_details?.info_link">
@@ -151,7 +149,7 @@
         </article>
       </div>
 
-      <div class="book-actions">
+      <div class="book-actions details-return-actions">
         <button
           type="button"
           class="ghost"
@@ -160,7 +158,9 @@
         >
           Modifier ce livre
         </button>
-        <button type="button" class="secondary" routerLink="/search">Retour a la recherche</button>
+        <button type="button" class="secondary" (click)="returnToSearch()">
+          Retour a la recherche
+        </button>
       </div>
     </section>
   </section>
@@ -170,5 +170,8 @@
   <section class="empty-state" *ngIf="!loading">
     <strong>Aucun livre detaille disponible.</strong>
     <span class="muted">Ouvrez cette page depuis une carte de livre pour afficher son overview.</span>
+    <button type="button" class="secondary" (click)="returnToSearch()">
+      Retour a la recherche
+    </button>
   </section>
 </ng-template>

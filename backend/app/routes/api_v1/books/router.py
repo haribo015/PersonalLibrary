@@ -23,6 +23,8 @@ async def search_books(
     current_user: Annotated[Optional[User], Depends(get_optional_current_user)],
 ):
     library_repository = LibraryRepository(db)
+    # Passing the user context lets the service flag books already saved without
+    # making anonymous search depend on authentication.
     return await GoogleBooksService().search_books(
         q,
         library_repository=library_repository,
@@ -43,6 +45,8 @@ async def get_book_overview(
 
     book = await book_repository.get_by_google_book_id(google_book_id)
     if book is None:
+        # Detail pages may be opened from search results before the book is saved,
+        # so Google Books is the fallback source of truth for the base payload.
         book = await google_books_service.get_book_by_id(google_book_id)
         if book is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Livre introuvable")

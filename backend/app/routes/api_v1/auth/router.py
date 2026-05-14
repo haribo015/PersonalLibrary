@@ -30,6 +30,8 @@ async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
+    # OAuth2PasswordRequestForm is kept for tool compatibility with FastAPI docs
+    # and standard API clients, even though the frontend submits a simple login form.
     service = AuthService(UserRepository(db))
     user = await service.authenticate_user(form_data.username, form_data.password)
     if user is None:

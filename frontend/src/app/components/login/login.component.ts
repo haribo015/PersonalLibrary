@@ -19,6 +19,7 @@ export class LoginComponent {
     this.error = '';
     this.auth.login(this.email, this.password).subscribe({
       next: () => {
+        // Search is the first useful product screen after authentication.
         this.router.navigate(['/search']);
       },
       error: () => {

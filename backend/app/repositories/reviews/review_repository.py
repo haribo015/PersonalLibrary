@@ -39,6 +39,8 @@ class ReviewRepository:
             review = BookReview(user_id=user_id, book_id=book_id, rating=rating, comment=comment)
             self.db.add(review)
         else:
+            # The unique user/book constraint makes review updates deterministic
+            # and prevents duplicate opinions from skewing averages.
             review.rating = rating
             review.comment = comment
         await self.db.commit()

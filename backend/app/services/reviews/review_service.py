@@ -24,6 +24,8 @@ class ReviewService:
 
         library_item = await self.library_repository.get_for_user_and_book(user_id, review_in.book_id)
         if library_item is None:
+            # A review is personal library metadata; requiring a saved book keeps
+            # recommendations and dashboard metrics anchored to owned data.
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Ajoutez d'abord ce livre a votre bibliotheque personnelle",

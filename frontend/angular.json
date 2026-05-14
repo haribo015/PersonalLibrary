@@ -1,6 +1,11 @@
 {
   "$schema": "https://angular.io/config/angular.json",
   "version": 1,
+  "cli": {
+    "cache": {
+      "enabled": false
+    }
+  },
   "projects": {
     "personal-library": {
       "projectType": "application",

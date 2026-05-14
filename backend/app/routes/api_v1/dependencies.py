@@ -8,6 +8,8 @@ from app.db.session import get_db
 from app.repositories.auth.user_repository import UserRepository
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/token")
+# Search and public-ish detail flows can enrich results when a token exists,
+# but should still work without forcing a login challenge at dependency level.
 oauth2_scheme_optional = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/token", auto_error=False)
 
 
@@ -41,6 +43,7 @@ async def get_optional_current_user(
 
     payload = decode_access_token(token)
     if not payload or "sub" not in payload:
+        # Optional auth must fail closed for personalization, not for the request.
         return None
 
     return await UserRepository(db).get_by_email(payload["sub"])

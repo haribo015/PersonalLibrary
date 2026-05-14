@@ -2,11 +2,13 @@ from pydantic import BaseModel
 
 
 class DashboardMetric(BaseModel):
+    # Generic label/value pair keeps chart-like dashboard sections uniform.
     label: str
     value: int
 
 
 class DashboardOverview(BaseModel):
+    # Single payload for the dashboard screen so it can render from one API call.
     books_in_library: int
     books_read_this_year: int
     books_in_progress: int
@@ -25,4 +27,5 @@ class DashboardOverview(BaseModel):
 
 
 class DashboardGoalUpdate(BaseModel):
+    # Kept as a DTO to leave room for future goal validation/versioning.
     reading_goal: int

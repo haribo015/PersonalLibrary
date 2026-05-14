@@ -14,8 +14,6 @@ def _build_local_origin(host: str, port: int) -> str:
 
 DEFAULT_CORS_ALLOW_ORIGINS = ",".join(
     [
-        _build_local_origin("localhost", 4200),
-        _build_local_origin("127.0.0.1", 4200),
         _build_local_origin("localhost", 9000),
         _build_local_origin("127.0.0.1", 9000),
     ]
@@ -23,6 +21,8 @@ DEFAULT_CORS_ALLOW_ORIGINS = ",".join(
 
 
 class Settings(BaseSettings):
+    # Centralize runtime configuration so Docker, CI, and local development use
+    # the same typed contract instead of environment reads scattered in the app.
     app_env: str = Field("development", env="APP_ENV")
     api_v1_str: str = Field("/api/v1", env="API_V1_STR")
     database_url: PostgresDsn = Field(..., env="DATABASE_URL")
@@ -39,6 +39,7 @@ class Settings(BaseSettings):
 
     @property
     def cors_allow_origins_list(self) -> list[str]:
+        # Keep .env values human-readable while exposing the list shape FastAPI expects.
         return [origin.strip() for origin in self.cors_allow_origins.split(",") if origin.strip()]
 
 

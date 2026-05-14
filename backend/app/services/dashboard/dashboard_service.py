@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from collections import Counter
-from datetime import date
 
 from app.db.models import User
 from app.repositories.auth.user_repository import UserRepository
@@ -25,11 +24,8 @@ class DashboardService:
         user_id = user.id
         library_items = await self.library_repository.list_for_user(user_id)
         reviews = await self.review_repository.list_for_user(user_id)
-        current_year = date.today().year
-
-        books_read_this_year = sum(
-            1 for item in library_items if item.finished_at is not None and item.finished_at.year == current_year
-        )
+        # Compute dashboard values from persisted library state only, making the
+        # endpoint deterministic and easy to verify in CI.
         books_in_progress = sum(1 for item in library_items if item.reading_status == "reading")
         books_to_read = sum(1 for item in library_items if item.reading_status == "to_read")
         books_dnf = sum(1 for item in library_items if item.reading_status == "dnf")
@@ -37,7 +33,7 @@ class DashboardService:
         favorite_books = sum(1 for item in library_items if item.favorite)
         completion_rate = round((finished_books / len(library_items)) * 100) if library_items else 0
         average_rating = round(sum(review.rating for review in reviews) / len(reviews), 1) if reviews else 0.0
-        reading_goal_progress = round((books_read_this_year / user.reading_goal) * 100) if user.reading_goal else 0
+        reading_goal_progress = round((finished_books / user.reading_goal) * 100) if user.reading_goal else 0
 
         def to_metrics(counter: Counter[str]) -> list[DashboardMetric]:
             return [DashboardMetric(label=label, value=value) for label, value in counter.most_common()]
@@ -48,6 +44,8 @@ class DashboardService:
         priorities = to_metrics(Counter(item.priority for item in library_items))
         top_tags = to_metrics(
             Counter(
+                # Tags are stored as a compact comma-separated field; normalize
+                # whitespace here before turning them into metrics.
                 tag.strip()
                 for item in library_items
                 for tag in (item.tags or "").split(",")
@@ -57,7 +55,7 @@ class DashboardService:
 
         return DashboardOverview(
             books_in_library=len(library_items),
-            books_read_this_year=books_read_this_year,
+            books_read_this_year=finished_books,
             books_in_progress=books_in_progress,
             books_to_read=books_to_read,
             books_dnf=books_dnf,

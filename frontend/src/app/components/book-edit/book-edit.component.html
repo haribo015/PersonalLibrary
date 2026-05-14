@@ -2,7 +2,6 @@
   <section class="hero details-hero">
     <span class="hero-tag">Edition</span>
     <h2>Modifier {{ item.book.title }}</h2>
-    <p>Les changements sont faits sur une page dediee, puis vous revenez directement sur la fiche detail du livre.</p>
   </section>
 
   <section class="details-layout">
@@ -43,7 +42,6 @@
       <div class="panel-head">
         <div>
           <h3>Modifier le suivi</h3>
-          <div class="section-note">Mettez a jour vos metadonnees de lecture et votre avis en une seule validation.</div>
         </div>
       </div>
 
@@ -143,8 +141,12 @@
         </div>
 
         <div class="book-actions">
-          <button type="button" class="secondary" [routerLink]="['/books', item.book.google_book_id]">Annuler</button>
-          <button type="submit" [disabled]="saving">{{ saving ? 'Enregistrement...' : 'Valider les modifications' }}</button>
+          <button type="button" class="secondary" [routerLink]="['/books', item.book.google_book_id]">
+            Annuler
+          </button>
+          <button type="submit" [disabled]="saving">
+            {{ saving ? 'Enregistrement...' : 'Valider les modifications' }}
+          </button>
         </div>
       </form>
     </section>

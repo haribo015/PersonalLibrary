@@ -14,6 +14,8 @@ class LibraryRepository:
             select(LibraryItem)
             .where(LibraryItem.user_id == user_id)
             .options(
+                # Eager-load books to avoid async lazy-loading surprises during
+                # response serialization and dashboard/recommendation aggregation.
                 selectinload(LibraryItem.book),
             )
             .order_by(LibraryItem.created_at.desc())
@@ -48,6 +50,8 @@ class LibraryRepository:
         return item
 
     async def delete_for_user_and_book(self, user_id: int, book_id: int) -> None:
+        # Removing a book from a personal library also removes the user's review
+        # for that book, keeping derived dashboard metrics consistent.
         await self.db.execute(delete(LibraryItem).where(LibraryItem.user_id == user_id, LibraryItem.book_id == book_id))
         await self.db.execute(delete(BookReview).where(BookReview.user_id == user_id, BookReview.book_id == book_id))
         await self.db.commit()

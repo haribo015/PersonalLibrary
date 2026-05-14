@@ -44,6 +44,7 @@ export class BookEditComponent implements OnInit {
     }
 
     forkJoin({
+      // Load library metadata and reviews together so the form is consistent.
       items: this.bookService.getLibrary(),
       reviews: this.bookService.getReviews(),
     }).subscribe({
@@ -77,6 +78,7 @@ export class BookEditComponent implements OnInit {
     this.saving = true;
 
     const payload: LibraryUpdate = {
+      // Send the complete editable shape to keep backend validation deterministic.
       category: this.item.category,
       reading_status: this.item.reading_status,
       priority: this.item.priority,
@@ -97,6 +99,7 @@ export class BookEditComponent implements OnInit {
     };
 
     forkJoin({
+      // Save reading metadata and personal review as one UI action.
       item: this.bookService.updateLibraryItem(this.item.book_id, payload),
       review: this.bookService.upsertReview(reviewPayload),
     }).subscribe({
@@ -117,7 +120,7 @@ export class BookEditComponent implements OnInit {
       reading: 'En cours',
       finished: 'Termine',
       paused: 'En pause',
-      dnf: 'DNF',
+      dnf: 'Abandonne',
     };
     return labels[status] ?? status;
   }
@@ -135,6 +138,7 @@ export class BookEditComponent implements OnInit {
     if (!item) {
       throw new Error('Aucun livre disponible pour la duplication.');
     }
+    // Clone before binding form fields so cancel/navigation does not mutate list state.
     return {
       ...item,
       book: { ...item.book },
