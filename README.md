@@ -20,6 +20,7 @@ Projet full stack de revue de livres avec :
 - `backend` : API FastAPI. Elle contient la logique metier, l'authentification, les routes REST, les services applicatifs et l'acces a la base de donnees.
 - `db` : base PostgreSQL. Elle stocke les utilisateurs, les livres, la bibliotheque personnelle, les avis et les donnees de suivi.
 - `backend-tests` : service dedie aux tests backend. Il lance `pytest` avec les rapports de couverture et de tests pour la CI.
+- `frontend-tests` : service dedie aux tests frontnet. Il lance les tests avec les rapports de couverture et de tests pour la CI.
 
 ## Services du Backend
 Les services backend sont dans `backend/app/services`. Ils portent la logique metier entre les routes FastAPI et les repositories d'acces aux donnees.
@@ -86,7 +87,7 @@ Copy-Item backend/.env.example backend/.env
 - Le rapport de tests Python est lu depuis `backend/pytest-report.xml`
 - La couverture TypeScript est lue depuis `frontend/coverage/personal-library/lcov.info`
 
-Pour activer l'analyse SonarQube dans GitHub Actions, ajoute ces secrets :
+Pour activer l'analyse SonarQube dans GitHub Actions, ces secrets doivent être ajoutés :
 - `SONAR_HOST_URL`
 - `SONAR_TOKEN`
 

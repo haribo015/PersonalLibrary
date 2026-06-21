@@ -4,7 +4,8 @@
     <h2>Rechercher les livres qui vous interessent</h2>
 
     <form class="searchbar" (submit)="$event.preventDefault(); search();">
-      <input type="text" [(ngModel)]="query" name="query" placeholder="Rechercher un titre, un auteur ou un theme" />
+      <label for="search-query">Recherche</label>
+      <input id="search-query" type="text" [(ngModel)]="query" name="query" placeholder="Rechercher un titre, un auteur ou un theme" />
       <button type="button" (click)="search()">Rechercher</button>
     </form>
   </section>
